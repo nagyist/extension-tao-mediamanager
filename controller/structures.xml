@@ -19,16 +19,16 @@
                     />
                 </trees>
                 <actions allowClassActions="true">
-                    <action id="media-class-properties" name="Properties" url="/taoMediaManager/MediaManager/editClassLabel" group="content" context="class" weight="10">
+                    <action id="media-class-properties" name="Properties" url="/taoMediaManager/MediaManager/editClassLabel" group="content" context="class" weight="1">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="media-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class" weight="3">
+                    <action id="media-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class" weight="8">
                         <icon id="icon-property-add"/>
                     </action>
-                    <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance" weight="10">
+                    <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance" weight="1">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="media-authoring" name="Authoring" url="/taoMediaManager/MediaManager/authoring" group="content" context="instance" binding="sharedStimulusAuthoring" weight="8">
+                    <action id="media-authoring" name="Authoring" url="/taoMediaManager/MediaManager/authoring" group="content" context="instance" binding="sharedStimulusAuthoring" weight="3">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass" weight="10">
