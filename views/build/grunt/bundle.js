@@ -32,6 +32,7 @@ module.exports = function (grunt) {
                     dependencies: ['taoItems', 'taoQtiItem', 'taoQtiTestPreviewer', 'taoTests'],
                     outputDir: 'loader',
                     paths: require('./paths.json'),
+                    babelPreTransform: { enabled: true, exclude: ['mathjax'] },
                     bundles: [
                         {
                             name: 'taoMediaManager',
