@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository;
 
+use oat\tao\model\resources\relation\FindAllQuery;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 interface MediaRelationRepositoryInterface
 {

@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
@@ -44,6 +45,10 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\AssetDeleter;
+use oat\taoMediaManager\model\TextReaderReferencesExtractorAdapter;
+use oat\taoMediaManager\model\TextReaderReferencesExtractorInterface;
+use oat\taoMediaManager\model\TextReaderInteractionQtiUpdater;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
@@ -54,7 +59,11 @@ use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourc
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
+use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor;
+use oat\taoQtiItem\model\qti\Service as QtiService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use taoItems_models_classes_ItemsService;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
@@ -210,6 +219,36 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 ]
             );
 
+        $services
+            ->set(TextReaderReferencesExtractor::class, TextReaderReferencesExtractor::class);
+
+        $services
+            ->set(TextReaderReferencesExtractorInterface::class, TextReaderReferencesExtractorAdapter::class)
+            ->args(
+                [
+                    service(TextReaderReferencesExtractor::class),
+                ]
+            );
+
+        $services
+            ->set(TextReaderInteractionQtiUpdater::class, TextReaderInteractionQtiUpdater::class)
+            ->public()
+            ->args(
+                [
+                    service(MediaRelationRepositoryInterface::SERVICE_ID),
+                    service(QtiService::class),
+                    service(UpdatedItemEventDispatcher::class),
+                    service(taoItems_models_classes_ItemsService::class),
+                    service(PersistenceManager::SERVICE_ID),
+                    service(TextReaderReferencesExtractorInterface::class),
+                ]
+            )
+            ->call(
+                'setLogger',
+                [
+                    service(LoggerService::SERVICE_ID),
+                ]
+            );
 
         $services->set(TranscriptionMimeTypesProvider::class)
             ->public();

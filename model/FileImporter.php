@@ -25,9 +25,11 @@ namespace oat\taoMediaManager\model;
 use common_report_Report as Report;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\log\TaoLoggerAwareInterface;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
+use oat\taoMediaManager\model\task\RefreshTextReaderInteractionQtiTask;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
@@ -140,6 +142,7 @@ class FileImporter implements
                         \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                         $userId
                     );
+                    $this->scheduleTextReaderInteractionRefresh($instanceUri);
                     $report = Report::createSuccess(__('Media imported successfully'));
                     $report->add(Report::createSuccess(
                         __('Edited %s', $fileInfo['name']),
@@ -189,5 +192,38 @@ class FileImporter implements
         $zipImporter = new SharedStimulusPackageImporter();
         $zipImporter->setServiceLocator($this->getServiceLocator());
         return $zipImporter;
+    }
+
+    private function scheduleTextReaderInteractionRefresh(string $instanceUri): void
+    {
+        try {
+            $task = $this->getQueueDispatcher()->createTask(
+                new RefreshTextReaderInteractionQtiTask(),
+                [
+                    RefreshTextReaderInteractionQtiTask::PARAM_MEDIA_ID => $instanceUri,
+                ],
+                __('Refresh Text Reader qti.xml files for media "%s"', $instanceUri)
+            );
+            $this->logInfo(
+                sprintf(
+                    'Queued Text Reader qti.xml refresh for media "%s" in task "%s"',
+                    $instanceUri,
+                    $task->getId()
+                )
+            );
+        } catch (\Throwable $throwable) {
+            $this->logError(
+                sprintf(
+                    'Unable to queue Text Reader qti.xml refresh for media "%s": %s',
+                    $instanceUri,
+                    $throwable->getMessage()
+                )
+            );
+        }
+    }
+
+    private function getQueueDispatcher(): QueueDispatcherInterface
+    {
+        return $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
     }
 }
