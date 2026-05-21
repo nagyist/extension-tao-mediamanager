@@ -60,7 +60,7 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
-use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor;
+use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextReaderReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service as QtiService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use taoItems_models_classes_ItemsService;
@@ -220,13 +220,21 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(TextReaderReferencesExtractor::class, TextReaderReferencesExtractor::class);
+            ->set(QtiTextReaderReferencesExtractor::class, QtiTextReaderReferencesExtractor::class);
+
+        $services
+            ->set(TextReaderReferencesExtractorAdapter::class, TextReaderReferencesExtractorAdapter::class)
+            ->args(
+                [
+                    service(QtiTextReaderReferencesExtractor::class),
+                ]
+            );
 
         $services
             ->set(TextReaderReferencesExtractorInterface::class, TextReaderReferencesExtractorAdapter::class)
             ->args(
                 [
-                    service(TextReaderReferencesExtractor::class),
+                    service(QtiTextReaderReferencesExtractor::class),
                 ]
             );
 
@@ -240,7 +248,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(UpdatedItemEventDispatcher::class),
                     service(taoItems_models_classes_ItemsService::class),
                     service(PersistenceManager::SERVICE_ID),
-                    service(TextReaderReferencesExtractorInterface::class),
+                    service(TextReaderReferencesExtractorAdapter::class),
                 ]
             )
             ->call(
