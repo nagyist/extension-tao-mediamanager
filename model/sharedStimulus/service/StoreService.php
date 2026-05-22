@@ -13,17 +13,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2025 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
-use League\Flysystem\FilesystemInterface;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -58,6 +59,25 @@ class StoreService extends ConfigurableService
         );
     }
 
+    public function getUniqueDirName(string $name): string
+    {
+        return $this->getUniqueName($name);
+    }
+
+    public function storeXmlStream($stimulusXmlStream, string $stimulusFilename, string $dirname): void
+    {
+        $fs = $this->getFileSystem();
+
+        if (!$fs->directoryExists($dirname)) {
+            $fs->createDirectory($dirname);
+        }
+
+        $fs->writeStream(
+            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename,
+            $stimulusXmlStream
+        );
+    }
+
     /**
      * @param resource $stimulusXmlStream
      */
@@ -66,18 +86,12 @@ class StoreService extends ConfigurableService
         string $stimulusFilename,
         array $cssFiles = []
     ): string {
-        $fs = $this->getFileSystem();
-
         $dirname = $this->getUniqueName($stimulusFilename);
-        $fs->createDir($dirname);
-
-        $fs->putStream(
-            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename,
-            $stimulusXmlStream
-        );
+        $this->storeXmlStream($stimulusXmlStream, $stimulusFilename, $dirname);
 
         if (count($cssFiles)) {
-            $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
+            $fs = $this->getFileSystem();
+            $fs->createDirectory($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
                 if (!file_exists($file)) {
                     $this->getLogger()->notice(sprintf("file %s does not exist", $file));
@@ -89,7 +103,7 @@ class StoreService extends ConfigurableService
                     continue;
                 }
 
-                $fs->putStream(
+                $fs->writeStream(
                     $dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file),
                     fopen($file, 'r')
                 );

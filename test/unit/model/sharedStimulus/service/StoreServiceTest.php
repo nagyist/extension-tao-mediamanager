@@ -22,20 +22,19 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
-use oat\generis\test\MockObject;
-use oat\generis\test\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use oat\generis\test\ServiceManagerMockTrait;
+use PHPUnit\Framework\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use Prophecy\Argument;
 
 class StoreServiceTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $tempFilePath;
+    use ServiceManagerMockTrait;
+
+    private string $tempFilePath;
 
     public function setUp(): void
     {
@@ -54,12 +53,14 @@ class StoreServiceTest extends TestCase
 
         $fileSystemMock = $this->initFileSystemMock();
         $fileSystemMock->expects(self::once())
-            ->method('createDir')
+            ->method('createDirectory')
             ->with($fakeUniqueName);
 
         $fileSystemMock->expects(self::once())
-            ->method('putStream')
-            ->willReturn(true);
+            ->method('writeStream');
+        $fileSystemMock->expects(self::once())
+            ->method('directoryExists')
+            ->willReturn(false);
 
         $stimulusStoreService = $this->getPreparedServiceInstance($fileSystemMock);
         $stimulusStoreService->expects(self::once())
@@ -71,34 +72,29 @@ class StoreServiceTest extends TestCase
         $this->assertEquals($result, $fakeUniqueName);
     }
 
-    /**
-     * @return FileSystem|MockObject
-     */
-    private function initFileSystemMock(): FileSystem
+    private function initFileSystemMock(): FileSystem|MockObject
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['createDir', 'putStream'])
+            ->onlyMethods(['createDirectory', 'writeStream', 'directoryExists'])
             ->getMock();
     }
 
-    /**
-     * @return StoreService|MockObject
-     */
-    private function getPreparedServiceInstance(FileSystem $fileSystemMock): StoreService
+    private function getPreparedServiceInstance(FileSystem $fileSystemMock): StoreService|MockObject
     {
-        $fileSystemServiceProphecy = $this->prophesize(FileSystemService::class);
-        $fileSystemServiceProphecy->getFileSystem(Argument::any())->willReturn($fileSystemMock);
+        $fileSystemService = $this->createMock(FileSystemService::class);
+        $fileSystemService->method('getFileSystem')->with($this->anything())->willReturn($fileSystemMock);
 
         $service = $this->getMockBuilder(StoreService::class)->onlyMethods(['getUniqueName'])->getMock();
         $service->setServiceLocator(
-            $this->getServiceLocatorMock(
+            $this->getServiceManagerMock(
                 [
                     FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
-                    FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal()
+                    FileSystemService::SERVICE_ID => $fileSystemService
                 ]
             )
         );
+
         return $service;
     }
 }

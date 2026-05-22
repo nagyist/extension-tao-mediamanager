@@ -237,7 +237,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
             [self::ITEM_RELATION_PROPERTY, $itemUri]
         );
 
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
+        return $statement->fetchFirstColumn();
     }
 
     public function getRelatedItemUrisByAssetUri(string $assetUri): array
@@ -247,7 +247,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
             [self::ITEM_RELATION_PROPERTY, $assetUri]
         );
 
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
+        return $statement->fetchFirstColumn();
     }
 
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)

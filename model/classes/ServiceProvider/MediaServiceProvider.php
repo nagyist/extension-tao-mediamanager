@@ -50,10 +50,10 @@ use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -69,10 +69,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
         $services = $configurator->services();
 
         $services
-            ->set(TempFileWriter::class, TempFileWriter::class)
-            ->private();
-
-        $services
             ->set(CopyService::class, CopyService::class)
             ->public()
             ->args(
@@ -83,7 +79,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(StylesheetRepository::class),
                     service(FileSourceUnserializer::class),
                     service(FileManagement::SERVICE_ID),
-                    service(TempFileWriter::class),
                 ]
             );
 
@@ -125,6 +120,8 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(SharedStimulusResourceSpecification::class),
                     service(CommandFactory::class),
                     service(CopyService::class),
+                    service(MediaService::class),
+                    service(FileManagement::SERVICE_ID),
                     DEFAULT_LANG,
                 ]
             );
@@ -212,5 +209,9 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(RdfMediaRelationRepository::class),
                 ]
             );
+
+
+        $services->set(TranscriptionMimeTypesProvider::class)
+            ->public();
     }
 }

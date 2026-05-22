@@ -20,6 +20,7 @@ define([
     'lodash',
     'jquery',
     'i18n',
+    'services/features',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoQtiItem/qtiCreator/widgets/static/states/Active',
     'tpl!taoQtiItem/qtiCreator/tpl/forms/static/object',
@@ -29,7 +30,7 @@ define([
     'ui/previewer',
     'ui/resourcemgr',
     'ui/tooltip'
-], function (_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper, mediaEditorComponent) {
+], function (_, $, __, features, stateFactory, Active, formTpl, formElement, inlineHelper, mediaEditorComponent) {
     'use strict';
     /**
      * media Editor instance if has been initialized
@@ -216,6 +217,9 @@ define([
             qtiObject = _widget.element,
             baseUrl = _widget.options.baseUrl;
         const $container = _widget.$original;
+        const compactAppearance = !!qtiObject.hasClass('compact-appearance');
+        const isAudio = /audio/.test(qtiObject.attr('type'));
+        const isCompactAppearanceAvailable = features.isVisible('taoQtiItem/creator/interaction/media/property/compactAppearance');
 
         $form.html(
             formTpl({
@@ -223,9 +227,16 @@ define([
                 src: qtiObject.attr('data'),
                 alt: qtiObject.attr('alt'),
                 height: qtiObject.attr('height'),
-                width: qtiObject.attr('width')
+                width: qtiObject.attr('width'),
+                isAudio,
+                isCompactAppearanceAvailable,
+                compactAppearance
             })
         );
+
+        if (isAudio && compactAppearance && isCompactAppearanceAvailable){
+            $container.parent().addClass('compact-appearance');
+        }
 
         //init resource manager
         _initUpload(_widget);
@@ -239,6 +250,16 @@ define([
 
         $container.off('playerready').on('playerready', function () {
             setMediaSizeEditor(_widget);
+            if (isCompactAppearanceAvailable) {
+                if (/audio/.test(qtiObject.attr('type'))) {
+                    $form.find('.compact-appearance').show();
+                } else {
+                    qtiObject.attr('compact-appearance', false);
+                    $form.find('.compact-appearance').hide();
+                    $form.find('.compact-appearance input[name="compactAppearance"]').prop("checked", false);
+                    $container.parent().removeClass('compact-appearance');
+                }
+            }
         });
 
         //init data change callbacks
@@ -279,6 +300,19 @@ define([
             },
             align: function (qtiObjectAlign, value) {
                 inlineHelper.positionFloat(_widget, value);
+            },
+            compactAppearance: function (object, value) {
+                if(value) {
+                    if(!$container.hasClass('compact-appearance')) {
+                        qtiObject.addClass('compact-appearance');
+                        $container.parent().addClass('compact-appearance');
+                    }
+                    $panelObjectSize.hide();
+                } else {
+                    qtiObject.removeClass('compact-appearance');
+                    $container.parent().removeClass('compact-appearance');
+                    $panelObjectSize.show();
+                }
             }
         });
     };
