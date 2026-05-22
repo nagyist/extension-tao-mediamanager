@@ -117,10 +117,13 @@ define([
     });
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
+        const contextType = _.isArray(actionContext.context)
+            ? actionContext.context[0]
+            : actionContext.type || actionContext.context || (actionContext.uri ? 'instance' : 'class');
         let data = {};
         let mediaRelationsData = {type: 'media'};
 
-        if (actionContext.context[0] === 'instance') {
+        if (contextType === 'instance') {
             mediaRelationsData.sourceId = actionContext.id
         } else {
             mediaRelationsData.classId = actionContext.id
@@ -139,7 +142,7 @@ define([
                 let message;
                 const haveItemReferences = responseRelated.data.relations;
                 const name = $('a.clicked', actionContext.tree).text().trim();
-                if (actionContext.context[0] === 'instance') {
+                if (contextType === 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
                     } else {
@@ -150,7 +153,7 @@ define([
                             items: haveItemReferences
                         });
                     }
-                } else if (actionContext.context[0] !== 'instance') {
+                } else if (contextType !== 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                     } else if (haveItemReferences.length !== 0) {
@@ -164,7 +167,7 @@ define([
                 callConfirmModal(actionContext, message, self.url, data, resolve, reject)
             }).catch(errorObject => {
                 let message;
-                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
+                if (contextType === 'class' && _.get(errorObject, 'response.code') === 999) {
                     message = forbiddenClassActionTpl();
                 }
                 callAlertModal(actionContext, message, reject)
