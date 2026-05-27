@@ -34,6 +34,7 @@ define([
     'ui/dialog/confirm',
     'ui/dialog/alert',
     'util/url',
+    'taoMediaManager/controller/contextType',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsClassPopup',
     'tpl!taoMediaManager/qtiCreator/tpl/forbiddenClassAction',
@@ -52,6 +53,7 @@ define([
     confirmDialog,
     alertDialog,
     urlUtil,
+    getContextType,
     relatedItemsPopupTpl,
     relatedItemsClassPopupTpl,
     forbiddenClassActionTpl
@@ -117,9 +119,7 @@ define([
     });
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
-        const contextType = _.isArray(actionContext.context)
-            ? actionContext.context[0]
-            : actionContext.type || actionContext.context || (actionContext.uri ? 'instance' : 'class');
+        const contextType = getContextType(actionContext);
         let data = {};
         let mediaRelationsData = {type: 'media'};
 
@@ -159,7 +159,7 @@ define([
                         });
                         callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
-                } else if (contextType !== 'instance') {
+                } else {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                         callConfirmModal(actionContext, message, self.url, data, resolve, reject);

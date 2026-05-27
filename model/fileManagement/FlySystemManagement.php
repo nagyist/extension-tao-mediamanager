@@ -64,7 +64,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         }
     }
 
-    public function getFileSize($link)
+    public function getFileSize(string $link): ?int
     {
         $filesystem = $this->getFilesystem();
         try {
