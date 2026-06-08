@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model;
 
 use Exception;
 use core_kernel_classes_Resource;
-use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\media\ItemMediaResolver;
@@ -51,7 +50,6 @@ class TextReaderInteractionQtiUpdater extends ConfigurableService
         private ?MediaRelationRepositoryInterface $mediaRelationRepository = null,
         private ?QtiService $qtiService = null,
         private ?UpdatedItemEventDispatcher $updatedItemEventDispatcher = null,
-        private ?PersistenceManager $persistenceManager = null,
         private ?TextReaderReferencesExtractorInterface $textReaderReferencesExtractor = null
     ) {
     }
@@ -103,7 +101,7 @@ class TextReaderInteractionQtiUpdater extends ConfigurableService
         if (!$qtiItem instanceof Item) {
             $this->logWarning(
                 sprintf('Resource "%s" is not associated with a valid QTI item', $rdfItem->getUri())
-            );            
+            );
             return false;
         }
 

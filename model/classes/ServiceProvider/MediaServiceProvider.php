@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
-use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
@@ -64,7 +63,6 @@ use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextRead
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service as QtiService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use taoItems_models_classes_ItemsService;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
@@ -254,7 +252,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(MediaRelationRepositoryInterface::SERVICE_ID),
                     service(QtiService::class),
                     service(UpdatedItemEventDispatcher::class),
-                    service(PersistenceManager::SERVICE_ID),
                     service(TextReaderReferencesExtractorAdapter::class),
                 ]
             )

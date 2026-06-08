@@ -205,7 +205,7 @@ class FileImporter implements
                 [
                     RefreshTextReaderInteractionQtiTask::PARAM_MEDIA_ID => $instanceUri,
                 ],
-                __('Refresh Text Reader qti.xml files for media "%s"', $instanceUri)
+                __('Import media files')
             );
             $this->logInfo(
                 sprintf(
