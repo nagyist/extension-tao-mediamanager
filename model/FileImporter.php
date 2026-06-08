@@ -88,9 +88,10 @@ class FileImporter implements
      */
     public function import($class, $form, $userId = null)
     {
-        $uploadedFile = $this->fetchUploadedFile($form);
+        $uploadedFile = null;
 
         try {
+            $uploadedFile = $this->fetchUploadedFile($form);
             $service = MediaService::singleton();
             $classUri = $class->getUri();
 
@@ -163,7 +164,9 @@ class FileImporter implements
             $report->setData(['uriResource' => '']);
         }
 
-        $this->getUploadService()->remove($uploadedFile);
+        if ($uploadedFile !== null) {
+            $this->getUploadService()->remove($uploadedFile);
+        }
 
         return $report;
     }

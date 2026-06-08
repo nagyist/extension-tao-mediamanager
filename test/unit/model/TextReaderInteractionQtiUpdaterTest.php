@@ -51,6 +51,8 @@ require_once __DIR__ . '/mock/TextReaderReferencesExtractorMock.php';
 
 class TextReaderInteractionQtiUpdaterTest extends TestCase
 {
+    private $originalApplicationService;
+    private $originalMediaService;
     private const ITEM_URI = 'http://example.com/ontologies/tao.rdf#textReaderItem';
     private const ITEM_IDENTIFIER = 'item-1';
     private const LANGUAGE = 'en-US';
@@ -70,6 +72,8 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
         }
 
         $serviceManager = ServiceManager::getServiceManager();
+        $this->originalApplicationService = $serviceManager->get(ApplicationService::SERVICE_ID);
+
         $applicationService = $this->createMock(ApplicationService::class);
         $applicationService->method('getPlatformVersion')
             ->willReturn('test-version');
@@ -78,6 +82,13 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
 
     protected function tearDown(): void
     {
+        $serviceManager = ServiceManager::getServiceManager();
+        if ($this->originalApplicationService !== null) {
+            $serviceManager->overload(ApplicationService::SERVICE_ID, $this->originalApplicationService);
+        }
+        if ($this->originalMediaService !== null) {
+            $serviceManager->overload(\oat\tao\model\media\MediaService::SERVICE_ID, $this->originalMediaService);
+        }
         foreach ($this->temporaryImagePaths as $temporaryImagePath) {
             if (is_file($temporaryImagePath)) {
                 unlink($temporaryImagePath);

@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\task;
 
+use Exception;
 use oat\oatbox\reporting\Report as Report;
 use oat\oatbox\extension\AbstractAction;
 use oat\taoMediaManager\model\TextReaderInteractionQtiUpdater;
-use Throwable;
 
 class RefreshTextReaderInteractionQtiTask extends AbstractAction
 {
@@ -49,11 +49,12 @@ class RefreshTextReaderInteractionQtiTask extends AbstractAction
             $this->logInfo($message);
 
             return Report::createSuccess($message);
-        } catch (Throwable $throwable) {
+        } catch (Exception $exception) {
             $message = sprintf(
-                'Unable to refresh Text Reader qti.xml files for media "%s": %s',
+                'Failed to refresh Text Reader qti.xml files for media "%s": %s: %s',
                 $mediaId,
-                $throwable->getMessage()
+                $exception::class,
+                $exception->getMessage()
             );
             $this->logError($message);
 
@@ -63,6 +64,6 @@ class RefreshTextReaderInteractionQtiTask extends AbstractAction
 
     private function getUpdater(): TextReaderInteractionQtiUpdater
     {
-        return $this->getServiceLocator()->getContainer()->get(TextReaderInteractionQtiUpdater::class);
+        return $this->getServiceLocator()->get(TextReaderInteractionQtiUpdater::class);
     }
 }

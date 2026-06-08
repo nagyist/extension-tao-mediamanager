@@ -22,23 +22,25 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
+use Exception;
 use core_kernel_classes_Resource;
-use common_persistence_SqlPersistence;
 use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\media\ItemMediaResolver;
+use oat\tao\model\media\TaoMediaException;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\exception\QtiModelException;
 use oat\taoQtiItem\model\qti\interaction\ImsPortableCustomInteraction;
 use oat\taoQtiItem\model\qti\interaction\PortableCustomInteraction;
 use oat\taoQtiItem\model\qti\Item;
+use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextReaderReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service as QtiService;
 use oat\tao\model\resources\relation\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use taoItems_models_classes_ItemsService;
-use Throwable;
 use tao_helpers_Uri;
 
-class TextReaderInteractionQtiUpdater
+class TextReaderInteractionQtiUpdater extends ConfigurableService
 {
     use LoggerAwareTrait;
 
@@ -46,12 +48,11 @@ class TextReaderInteractionQtiUpdater
     private const ITEM_RELATION_TYPE = 'item';
 
     public function __construct(
-        private readonly MediaRelationRepositoryInterface $mediaRelationRepository,
-        private readonly QtiService $qtiService,
-        private readonly UpdatedItemEventDispatcher $updatedItemEventDispatcher,
-        private readonly taoItems_models_classes_ItemsService $itemsService,
-        private readonly PersistenceManager $persistenceManager,
-        private readonly TextReaderReferencesExtractorInterface $textReaderReferencesExtractor
+        private ?MediaRelationRepositoryInterface $mediaRelationRepository = null,
+        private ?QtiService $qtiService = null,
+        private ?UpdatedItemEventDispatcher $updatedItemEventDispatcher = null,
+        private ?PersistenceManager $persistenceManager = null,
+        private ?TextReaderReferencesExtractorInterface $textReaderReferencesExtractor = null
     ) {
     }
 
@@ -64,12 +65,13 @@ class TextReaderInteractionQtiUpdater
                 if ($this->refreshItemResource($item, $mediaId)) {
                     $updatedItemsCount++;
                 }
-            } catch (Throwable $throwable) {
-                $this->logWarning(
+            } catch (Exception $exception) {
+                $this->logError(
                     sprintf(
-                        'Unable to refresh Text Reader interaction references for item "%s": %s',
+                        'Failed to refresh Text Reader interaction references for item "%s" and media "%s": %s',
                         $item->getUri(),
-                        $throwable->getMessage()
+                        $mediaId,
+                        $this->formatExceptionDetails($exception)
                     )
                 );
             }
@@ -99,7 +101,9 @@ class TextReaderInteractionQtiUpdater
 
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($rdfItem);
         if (!$qtiItem instanceof Item) {
-            error_log(sprintf('Resource "%s" is not associated with a valid QTI item', $rdfItem->getUri()));
+            $this->logWarning(
+                sprintf('Resource "%s" is not associated with a valid QTI item', $rdfItem->getUri())
+            );            
             return false;
         }
 
@@ -208,7 +212,16 @@ class TextReaderInteractionQtiUpdater
 
             return $asset->getMediaSource() instanceof MediaSource
                 && tao_helpers_Uri::decode($asset->getMediaIdentifier()) === $mediaId;
-        } catch (Throwable $_) {
+        } catch (TaoMediaException $exception) {
+            $this->logError(
+                sprintf(
+                    'Failed to resolve Text Reader media reference "%s" while checking media "%s": %s',
+                    $reference,
+                    $mediaId,
+                    $this->formatExceptionDetails($exception)
+                )
+            );
+
             return false;
         }
     }
@@ -239,12 +252,14 @@ class TextReaderInteractionQtiUpdater
 
     private function getQtiService(): QtiService
     {
-        return $this->qtiService;
+        return $this->qtiService ??= $this->getServiceLocator()->get(QtiService::class);
     }
 
     private function getMediaRelationRepository(): MediaRelationRepositoryInterface
     {
-        return $this->mediaRelationRepository;
+        return $this->mediaRelationRepository ??= $this->getServiceLocator()->get(
+            MediaRelationRepositoryInterface::SERVICE_ID
+        );
     }
 
     private function getInteractionLogIdentifier(
@@ -259,10 +274,26 @@ class TextReaderInteractionQtiUpdater
             if ($response !== null && method_exists($response, 'getIdentifier')) {
                 return (string) $response->getIdentifier();
             }
-        } catch (Throwable $_) {
+        } catch (QtiModelException $exception) {
+            $this->logError(
+                sprintf(
+                    'Failed to read response identifier for Text Reader interaction type "%s": %s',
+                    $interaction->getTypeIdentifier(),
+                    $this->formatExceptionDetails($exception)
+                )
+            );
         }
 
         return $interaction->getTypeIdentifier();
+    }
+
+    private function formatExceptionDetails(Exception $exception): string
+    {
+        return sprintf(
+            '%s: %s',
+            $exception::class,
+            $exception->getMessage()
+        );
     }
 
     private function ensureQtiProductNameIsDefined(): void
@@ -274,16 +305,15 @@ class TextReaderInteractionQtiUpdater
 
     private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
     {
-        return $this->updatedItemEventDispatcher;
+        return $this->updatedItemEventDispatcher ??= $this->getServiceLocator()->get(
+            UpdatedItemEventDispatcher::class
+        );
     }
 
     private function getTextReaderReferencesExtractor(): TextReaderReferencesExtractorInterface
     {
-        return $this->textReaderReferencesExtractor;
-    }
-
-    private function getPersistence(): common_persistence_SqlPersistence
-    {
-        return $this->persistenceManager->getPersistenceById('default');
+        return $this->textReaderReferencesExtractor ??= new TextReaderReferencesExtractorAdapter(
+            new QtiTextReaderReferencesExtractor()
+        );
     }
 }

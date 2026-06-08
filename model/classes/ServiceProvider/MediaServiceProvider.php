@@ -61,6 +61,7 @@ use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextReaderReferencesExtractor;
+use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service as QtiService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use taoItems_models_classes_ItemsService;
@@ -238,6 +239,13 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 ]
             );
 
+        $services->set(ElementReferencesExtractor::class, ElementReferencesExtractor::class)
+            ->args(
+                [
+                    service(QtiTextReaderReferencesExtractor::class),
+                ]
+            );
+
         $services
             ->set(TextReaderInteractionQtiUpdater::class, TextReaderInteractionQtiUpdater::class)
             ->public()
@@ -246,7 +254,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(MediaRelationRepositoryInterface::SERVICE_ID),
                     service(QtiService::class),
                     service(UpdatedItemEventDispatcher::class),
-                    service(taoItems_models_classes_ItemsService::class),
                     service(PersistenceManager::SERVICE_ID),
                     service(TextReaderReferencesExtractorAdapter::class),
                 ]

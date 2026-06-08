@@ -155,7 +155,10 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             }
         }
 
-        copy(dirname(__DIR__) . '/sample/' . $fixtureName, $path);
+        $this->assertTrue(
+            copy(dirname(__DIR__) . '/sample/' . $fixtureName, $path),
+            sprintf('Unable to copy fixture "%s" to temporary path.', $fixtureName)
+        );
 
         return $path;
     }
