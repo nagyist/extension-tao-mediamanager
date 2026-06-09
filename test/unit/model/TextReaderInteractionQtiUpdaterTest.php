@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\test\unit\model;
 
 use core_kernel_classes_Resource;
 use GuzzleHttp\Psr7\Utils;
-use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaAsset;
 use oat\tao\model\resources\relation\FindAllQuery;
@@ -38,12 +37,13 @@ use oat\taoMediaManager\test\unit\model\mock\TextReaderReferencesExtractorMock;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\interaction\PortableCustomInteraction;
 use oat\taoQtiItem\model\qti\Item;
+use oat\taoQtiItem\model\qti\ResponseDeclaration;
 use oat\taoQtiItem\model\qti\Service as QtiService;
 use oat\taoItems\model\media\ItemMediaResolver;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use tao_helpers_Uri;
-use taoItems_models_classes_ItemsService;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 // phpcs:disable PSR1.Files.SideEffects
 require_once __DIR__ . '/mock/TextReaderReferencesExtractorMock.php';
@@ -51,8 +51,12 @@ require_once __DIR__ . '/mock/TextReaderReferencesExtractorMock.php';
 
 class TextReaderInteractionQtiUpdaterTest extends TestCase
 {
-    private $originalApplicationService;
-    private $originalMediaService;
+    private ServiceManager $originalServiceManager;
+    private ServiceManager $serviceManagerMock;
+
+    /** @var array<string, object> */
+    private array $services = [];
+
     private const ITEM_URI = 'http://example.com/ontologies/tao.rdf#textReaderItem';
     private const ITEM_IDENTIFIER = 'item-1';
     private const LANGUAGE = 'en-US';
@@ -71,30 +75,48 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             define('PRODUCT_NAME', 'TAO');
         }
 
-        $serviceManager = ServiceManager::getServiceManager();
-        $this->originalApplicationService = $serviceManager->get(ApplicationService::SERVICE_ID);
-
         $applicationService = $this->createMock(ApplicationService::class);
         $applicationService->method('getPlatformVersion')
             ->willReturn('test-version');
-        $serviceManager->overload(ApplicationService::SERVICE_ID, $applicationService);
+        $this->services = [
+            ApplicationService::SERVICE_ID => $applicationService,
+        ];
+
+        $this->originalServiceManager = ServiceManager::getServiceManager();
+        $this->serviceManagerMock = $this->getMockBuilder(ServiceManager::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get', 'has', 'overload', 'propagate'])
+            ->getMock();
+        $this->serviceManagerMock->method('get')
+            ->willReturnCallback(fn (string $serviceId) => $this->services[$serviceId] ?? null);
+        $this->serviceManagerMock->method('has')
+            ->willReturnCallback(fn (string $serviceId): bool => array_key_exists($serviceId, $this->services));
+        $this->serviceManagerMock->method('overload')
+            ->willReturnCallback(function (string $serviceId, object $service): void {
+                $this->services[$serviceId] = $service;
+            });
+        $this->serviceManagerMock->method('propagate')
+            ->willReturnCallback(function (object $service): object {
+                if ($service instanceof ServiceLocatorAwareInterface) {
+                    $service->setServiceLocator($this->serviceManagerMock);
+                }
+
+                return $service;
+            });
+
+        ServiceManager::setServiceManager($this->serviceManagerMock);
     }
 
     protected function tearDown(): void
     {
-        $serviceManager = ServiceManager::getServiceManager();
-        if ($this->originalApplicationService !== null) {
-            $serviceManager->overload(ApplicationService::SERVICE_ID, $this->originalApplicationService);
-        }
-        if ($this->originalMediaService !== null) {
-            $serviceManager->overload(\oat\tao\model\media\MediaService::SERVICE_ID, $this->originalMediaService);
-        }
+        ServiceManager::setServiceManager($this->originalServiceManager);
         foreach ($this->temporaryImagePaths as $temporaryImagePath) {
             if (is_file($temporaryImagePath)) {
                 unlink($temporaryImagePath);
             }
         }
 
+        $this->services = [];
         $this->temporaryImagePaths = [];
     }
 
@@ -134,8 +156,6 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             $this->createMock(MediaRelationRepositoryInterface::class),
             $this->createMock(QtiService::class),
             $this->createMock(UpdatedItemEventDispatcher::class),
-            $this->createMock(taoItems_models_classes_ItemsService::class),
-            $this->createMock(PersistenceManager::class),
             $textReaderReferencesExtractor
         );
 
@@ -206,8 +226,8 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             ]
         );
         $taoMediaService->setLogger(new NullLogger());
-        ServiceManager::getServiceManager()->propagate($taoMediaService);
-        ServiceManager::getServiceManager()->overload(\oat\tao\model\media\MediaService::SERVICE_ID, $taoMediaService);
+        $this->serviceManagerMock->propagate($taoMediaService);
+        $this->serviceManagerMock->overload(\oat\tao\model\media\MediaService::SERVICE_ID, $taoMediaService);
         $resolvedAsset = (new ItemMediaResolver(new core_kernel_classes_Resource(self::ITEM_URI), self::LANGUAGE))
             ->resolve($mediaLink);
         $this->assertInstanceOf(MediaSource::class, $resolvedAsset->getMediaSource());
@@ -259,8 +279,6 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             $repository,
             $qtiService,
             $eventDispatcher,
-            $this->createMock(taoItems_models_classes_ItemsService::class),
-            $this->createMock(PersistenceManager::class),
             $textReaderReferencesExtractor
         );
         $subject->setLogger(new NullLogger());
@@ -304,6 +322,10 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             $interaction,
             sprintf('<div class="text-reader">%s</div>', $interaction->getPlaceholder())
         );
+        $responseDeclaration = new ResponseDeclaration();
+        $responseDeclaration->setIdentifier('RESPONSE_' . $interaction->getSerial());
+        $item->addResponse($responseDeclaration);
+        $interaction->setAttribute('responseIdentifier', $responseDeclaration);
 
         return $item;
     }

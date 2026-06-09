@@ -93,7 +93,7 @@ class RefreshTextReaderInteractionQtiTaskTest extends TestCase
         $this->assertInstanceOf(Report::class, $report);
         $this->assertSame(Report::TYPE_ERROR, $report->getType());
         $this->assertSame(
-            'Unable to refresh Text Reader qti.xml files for media "media-id": boom',
+            'Failed to refresh Text Reader qti.xml files for media "media-id": RuntimeException: boom',
             $report->getMessage()
         );
     }
