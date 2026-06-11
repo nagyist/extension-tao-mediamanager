@@ -31,24 +31,14 @@ define([
      * Populate a select box with a list of fonts to select from.
      * On change apply the selected font to the specified target.
      *
-     * @example
-     * The expected mark-up must be like this:
-     * <select
-     *   data-target="selector-of-targeted-element"
-     *   data-not-selected="Select a font
-     *   data-selected="Reset to default">
-     * <option value=""></option>
-     *
-     * The function is called like this:
-     * fontSelector();
-     *
      * @param {JQuery} $container
      */
     const fontSelector = function ($container) {
-        const selector = 'select#item-editor-font-selector',
-            $selector = $container.find(selector);
-        let target = styleEditor.replaceHashClass($selector.data('target'));
-        let normalize = function (font) {
+        const isTextBlockPanel = $container.is('#item-editor-text-property-bar');
+        const selector = 'select#item-editor-font-selector';
+        const $selector = $container.find(selector);
+        const target = styleEditor.replaceHashClass(styleEditor.replaceMainClass($selector.data('target')));
+        const normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },
             clean = function (font) {
@@ -67,19 +57,49 @@ define([
                     return state.text;
                 }
                 return `<span style="font-size: 12px;${$(originalOption).attr('style')}">${state.text}</span>`;
-            },
-            reset = function () {
-                styleEditor.apply(target, 'font-family');
-                $selector.select2('val', '');
             };
-        let applyToStylesEditor = true;
+
+        const getCssVariablesRootSelector = function () {
+            if (isTextBlockPanel) {
+                return styleEditor.replaceHashClass(
+                    styleEditor.replaceMainClass('body div.qti-item .custom-text-box.hashClass')
+                );
+            }
+            return styleEditor.getConfig().cssVariablesRootSelector;
+        };
+
+        const styleEditorApply = function (val) {
+            const varName = '--styleeditor-font-family';
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+            styleEditor.apply(cssVariablesRootSelector, varName, val);
+            styleEditor.apply(target, 'font-family', val ? `var(${varName})` : null);
+        };
+
+        const resolveFontFamilyValue = function (style) {
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+            let shouldFireStyleChange = false;
+            let val = style[cssVariablesRootSelector] && style[cssVariablesRootSelector]['--styleeditor-font-family'];
+            if (!val) {
+                const propVal = style[target] && style[target]['font-family'];
+                if (propVal) {
+                    const normalizedVal = propVal.replace(' !important', '');
+                    const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
+                    if (varMatch && style[cssVariablesRootSelector]) {
+                        val = style[cssVariablesRootSelector][varMatch[1].trim()];
+                    } else if (!normalizedVal.startsWith('var(')) {
+                        val = normalizedVal;
+                        shouldFireStyleChange = true; // migrate older stylesheets
+                    }
+                }
+            }
+            return { val, shouldFireStyleChange };
+        };
 
         $selector.empty();
         $selector.append(`<option value="">${__('Default')}</option>`);
 
-        // initiate font family for Block
         const styles = styleEditor.getStyle() || {};
-        const selectedFontFamily = styles[target] && styles[target]['font-family'] && clean(styles[target]['font-family']);
+        const { val: selectedFontFamily } = resolveFontFamilyValue(styles);
 
         _.forEach(fontStacks, (value, key) => {
             const optGroup = $('<optgroup>', { label: toLabel(key) });
@@ -91,7 +111,7 @@ define([
                 }).css({
                     fontFamily: normalizeFont
                 });
-                if (clean(normalizeFont) === selectedFontFamily) {
+                if (selectedFontFamily && clean(normalizeFont) === clean(selectedFontFamily)) {
                     option.attr('selected', true);
                 }
                 optGroup.append(option);
@@ -99,7 +119,10 @@ define([
             $selector.append(optGroup);
         });
 
-        resetButton.off('click').on('click', reset);
+        resetButton.off('click').on('click', function () {
+            styleEditorApply(null);
+            $selector.select2('val', '');
+        });
 
         $selector.select2({
             formatResult: format,
@@ -108,23 +131,19 @@ define([
         });
 
         $selector.off('change').on('change', function () {
-            if (applyToStylesEditor) {
-                styleEditor.apply(target, 'font-family', $(this).val());
-            } else {
-                applyToStylesEditor = true;
-            }
+            styleEditorApply($(this).val());
+            $container.find(`${selector} option:selected`).first().attr('selected', 'selected');
         });
 
-        /**
-         * style loaded from style sheet
-         */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
-            if (style[target] && style[target]['font-family']) {
-                $selector.select2('val', style[target]['font-family'].replace(' !important', ''));
-                $(`${selector} option:selected`).first().attr('selected', 'selected');
+            const { val, shouldFireStyleChange } = resolveFontFamilyValue(style);
+            if (val) {
+                $selector.select2('val', val);
+                $container.find(`${selector} option:selected`).first().attr('selected', 'selected');
+                if (shouldFireStyleChange) {
+                    styleEditorApply(val);
+                }
             }
-            applyToStylesEditor = false;
-            $selector.trigger('change');
         });
     };
 

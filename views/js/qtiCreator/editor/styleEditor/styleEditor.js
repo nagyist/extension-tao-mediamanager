@@ -178,8 +178,16 @@ define([
                 delete style[selector];
             }
         } else {
-            // add this rule
-            value = value.includes('!important') ? value : `${value} !important`;
+            // align with item authoring: no !important on CSS variables or var() references
+            const isCustomProperty = property.startsWith('--');
+            const normalizedValue = String(value).replace(/\s*!important\s*$/i, '').trim();
+            const isVarReference = /^var\(/i.test(normalizedValue);
+
+            if (isCustomProperty || isVarReference) {
+                value = normalizedValue;
+            } else if (!value.includes('!important')) {
+                value = `${value} !important`;
+            }
             style[selector][property] = value;
         }
 
@@ -453,7 +461,7 @@ define([
     const init = function (item, config) {
         let href;
 
-        globalConfig = config;
+        globalConfig = Object.assign({ cssVariablesRootSelector: '.qti-item' }, config);
         // promise
         currentItem = item;
 
@@ -538,6 +546,10 @@ define([
         $(document).off('customcssloaded.styleeditor');
     };
 
+    const getConfig = function () {
+        return globalConfig;
+    };
+
     return {
         apply: apply,
         save: save,
@@ -557,6 +569,7 @@ define([
         setMainClass: setMainClass,
         generateMainClass: generateMainClass,
         replaceMainClass: replaceMainClass,
-        clearCache: clearCache
+        clearCache: clearCache,
+        getConfig: getConfig
     };
 });

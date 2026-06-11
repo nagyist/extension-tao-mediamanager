@@ -31,17 +31,59 @@ define([
         return `#${toHexPair(rgbArr[1])}${toHexPair(rgbArr[2])}${toHexPair(rgbArr[3])}`;
     }
 
-    function additionalStylesToObject(additional = '') {
-        const styles = {};
-        const additionalStyles = additional.split(';');
-        additionalStyles.forEach(element => {
-            const keyValue = element.split(':');
-            styles[keyValue[0]] = keyValue[1];
-        });
-        return styles;
-    }
+    const passageColorBindings = {
+        'background-color': {
+            varName: '--styleeditor-bg-color',
+            propSelector: 'body div.qti-item',
+            propName: 'background-color',
+            additional: { padding: '20px' }
+        },
+        'text-color': {
+            varName: '--styleeditor-text-color',
+            propSelector: 'body div.qti-item',
+            propName: 'color'
+        },
+        'border-color': {
+            varName: '--styleeditor-border-color',
+            propSelector: 'body div.qti-item',
+            propName: 'border-color',
+            additional: { 'border-width': '4px', 'border-style': 'solid', padding: '20px' }
+        },
+        'table-heading-color': {
+            varName: '--styleeditor-table-heading-bg-color',
+            propSelector: 'body div.qti-item table th',
+            propName: 'background-color'
+        }
+    };
+
+    const textBlockColorBindings = {
+        'background-color': {
+            varName: '--styleeditor-bg-color',
+            propSelector: 'body div.qti-item .custom-text-box.hashClass',
+            propName: 'background-color',
+            additional: { padding: '20px', 'margin-bottom': '0' }
+        },
+        'text-color': {
+            varName: '--styleeditor-text-color',
+            propSelector: 'body div.qti-item .custom-text-box.hashClass',
+            propName: 'color'
+        },
+        'border-color': {
+            varName: '--styleeditor-border-color',
+            propSelector: 'body div.qti-item .custom-text-box.hashClass',
+            propName: 'border-color',
+            additional: { 'border-width': '4px', 'border-style': 'solid', padding: '20px' }
+        },
+        'table-heading-color': {
+            varName: '--styleeditor-table-heading-bg-color',
+            propSelector: 'body div.qti-item .custom-text-box.hashClass table th',
+            propName: 'background-color'
+        }
+    };
 
     const colorSelector = function ($container) {
+        const isTextBlockPanel = $container.is('#item-editor-text-property-bar');
+        const colorBindings = isTextBlockPanel ? textBlockColorBindings : passageColorBindings;
         const colorPicker = $container.find('.item-editor-color-picker'),
             widget = colorPicker.find('.color-picker'),
             widgetBox = colorPicker.find('.color-picker-container'),
@@ -52,59 +94,103 @@ define([
             colorTriggerLabels = colorPicker.find('label'),
             $doc = $(document),
             additionalStyles = {};
-        let currentProperty = 'color',
-            widgetObj;
+        let widgetObj;
+
+        const resolveSelector = function (selector) {
+            return styleEditor.replaceHashClass(styleEditor.replaceMainClass(selector));
+        };
+
+        const getCssVariablesRootSelector = function () {
+            if (isTextBlockPanel) {
+                return resolveSelector('body div.qti-item .custom-text-box.hashClass');
+            }
+            return styleEditor.getConfig().cssVariablesRootSelector;
+        };
 
         /**
          * Widget title
          *
-         * @param {Object} property
          * @param {JQueryElement} trigger
          */
-        const setTitle = function (property, trigger) {
+        const setTitle = function (trigger) {
             titleElement.text(trigger.parent().find('label').text());
+        };
+
+        const applyAdditionalStyles = function (propSelector, additional, val) {
+            if (!additional) {
+                return;
+            }
+            Object.keys(additional).forEach(key => {
+                styleEditor.apply(propSelector, key, val ? additional[key] : null);
+            });
+        };
+
+        const styleEditorApply = function (target, val) {
+            const { varName, propSelector, propName, additional } = colorBindings[target];
+            const resolvedPropSelector = resolveSelector(propSelector);
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+
+            styleEditor.apply(cssVariablesRootSelector, varName, val);
+            styleEditor.apply(resolvedPropSelector, propName, val ? `var(${varName})` : null);
+            if (val) {
+                applyAdditionalStyles(resolvedPropSelector, additional, val);
+            }
         };
 
         /**
          * Trigger button background
          */
         const setTriggerColor = function () {
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+
             colorTriggers.each(function () {
-                const $trigger = $(this);
-                let target = styleEditor.replaceHashClass($trigger.data('target'));
-                const style = styleEditor.getStyle() || {};
-                let value;
-                const targetOld = target.replace(' *', ''); // previous version was without *
-                if (style[target] && style[target][$trigger.data('value')]) {
-                    value = style[target][$trigger.data('value')].replace(' !important', '');
-                    $trigger.css('background-color', value);
-                    $trigger.attr('title', rgbToHex(value));
-                } else if (style[targetOld] && style[targetOld][$trigger.data('value')]) {
-                    value = style[targetOld][$trigger.data('value')].replace(' !important', '');
-                    $trigger.css('background-color', value);
-                    $trigger.attr('title', rgbToHex(value));
+                const $trigger = $(this),
+                    target = $trigger.data('target'),
+                    style = styleEditor.getStyle() || {};
+
+                let shouldFireStyleChange = false;
+                const { varName, propSelector, propName } = colorBindings[target];
+                const resolvedPropSelector = resolveSelector(propSelector);
+                let val = style[cssVariablesRootSelector] && style[cssVariablesRootSelector][varName];
+                if (!val) {
+                    const propVal = style[resolvedPropSelector] && style[resolvedPropSelector][propName];
+                    if (propVal) {
+                        const normalizedVal = propVal.replace(' !important', '');
+                        const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
+                        if (varMatch && style[cssVariablesRootSelector]) {
+                            val = style[cssVariablesRootSelector][varMatch[1].trim()];
+                        } else {
+                            val = normalizedVal;
+                            shouldFireStyleChange = true; // migrate older stylesheets
+                        }
+                    }
+                }
+
+                if (val) {
+                    $trigger.css('background-color', val);
+                    $trigger.attr('title', rgbToHex(val));
+                    if (shouldFireStyleChange) {
+                        styleEditorApply(target, val);
+                    }
                 } else {
-                    // elements have no color at all
                     $trigger.css('background-color', '');
                     $trigger.attr('title', __('No value set'));
                 }
             });
         };
 
-        /**
-         * Trigger button background
-         */
         const collectCommonAdditionalStyles = function () {
-            colorTriggers.each(function () {
-                const $trigger = $(this);
-                let target = styleEditor.replaceHashClass($trigger.data('target'));
-                const value = $trigger.data('value');
-                const styles = additionalStylesToObject($trigger.data('additional'));
-                Object.keys(styles).forEach(key => {
+            Object.keys(colorBindings).forEach(target => {
+                const { propSelector, propName, additional } = colorBindings[target];
+                if (!additional) {
+                    return;
+                }
+                const resolvedSelector = resolveSelector(propSelector);
+                Object.keys(additional).forEach(key => {
                     if (!additionalStyles[key]) {
-                        additionalStyles[key] = [{ target, value }];
+                        additionalStyles[key] = [{ propSelector: resolvedSelector, propName }];
                     } else {
-                        additionalStyles[key].push({ target, value });
+                        additionalStyles[key].push({ propSelector: resolvedSelector, propName });
                     }
                 });
             });
@@ -112,95 +198,77 @@ define([
 
         widgetObj = $.farbtastic(widget).linkTo(input);
 
+        // event received from modified farbtastic
+        widget.on('colorchange.farbtastic', function (e, color) {
+            styleEditorApply(widget.prop('target'), color);
+            setTriggerColor();
+        });
+
         // open color picker
         setTriggerColor();
         collectCommonAdditionalStyles();
-        colorTriggers
-            .add(colorTriggerLabels)
-            .off('click')
-            .on('click', function () {
-                const $tmpTrigger = $(this),
-                    $trigger =
-                        this.nodeName.toLowerCase() === 'label'
-                            ? $tmpTrigger.parent().find('.color-trigger')
-                            : $tmpTrigger;
+        colorTriggers.add(colorTriggerLabels).on('click', function () {
+            const $tmpTrigger = $(this),
+                $trigger =
+                    this.nodeName.toLowerCase() === 'label' ? $tmpTrigger.parent().find('.color-trigger') : $tmpTrigger;
 
-                widget.prop('target', $trigger.data('target'));
-                widget.prop('additional', $trigger.data('additional') || '');
+            widget.prop('target', $trigger.data('target'));
+            widgetBox.hide();
+            setTitle($trigger);
+            widgetObj.setColor(rgbToHex($trigger.css('background-color')));
+            widgetBox.show();
+        });
+
+        // close color picker, when clicking somewhere outside or on the x
+        $doc.on('mouseup', function (e) {
+            if ($(e.target).hasClass('closer')) {
                 widgetBox.hide();
-                currentProperty = $trigger.data('value');
-                setTitle(currentProperty, $trigger);
-                widgetObj.setColor(rgbToHex($trigger.css('background-color')));
-                widgetBox.show();
+                return false;
+            }
 
-                // event received from modified farbtastic
-                widget.on('colorchange.farbtastic', function (e, color) {
-                    styleEditor.apply(widget.prop('target'), currentProperty, color);
-                    if (widget.prop('additional')) {
-                        const styles = additionalStylesToObject(widget.prop('additional'));
-                        Object.keys(styles).forEach(key => {
-                            styleEditor.apply(widget.prop('target'), key, styles[key]);
-                        });
-                    }
-                    setTriggerColor();
-                });
+            if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
+                widgetBox.hide();
+                return false;
+            }
+        });
 
-                // close color picker, when clicking somewhere outside or on the x
-                $doc.on('mouseup.colorselector', function (e) {
-                    if ($(e.target).hasClass('closer')) {
-                        widgetBox.hide();
-                        widget.off('colorchange.farbtastic');
-                        $doc.off('colorselector');
-                        return false;
-                    }
-
-                    if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
-                        widgetBox.hide();
-                        widget.off('colorchange.farbtastic');
-                        $doc.off('colorselector');
-                        return false;
-                    }
-                });
-
-                // close color picker on escape
-                $doc.on('keyup.colorselector', function (e) {
-                    if (e.keyCode === 27) {
-                        widgetBox.hide();
-                        widget.off('colorchange.farbtastic');
-                        $doc.off('colorselector');
-                        return false;
-                    }
-                });
-            });
+        // close color picker on escape
+        $doc.on('keyup', function (e) {
+            if (e.keyCode === 27) {
+                widgetBox.hide();
+                return false;
+            }
+        });
 
         // reset to default
-        resetButtons.off('click').on('click', function () {
-            const $this = $(this);
-            const $colorTrigger = $this.parent().find('.color-trigger');
-            let target = styleEditor.replaceHashClass($colorTrigger.data('target'));
-            const value = $colorTrigger.data('value');
-            const additional = $colorTrigger.data('additional');
-            styleEditor.apply(target, value);
+        resetButtons.on('click', function () {
+            const $this = $(this),
+                $colorTrigger = $this.parent().find('.color-trigger'),
+                target = $colorTrigger.data('target'),
+                { propSelector, additional } = colorBindings[target],
+                resolvedPropSelector = resolveSelector(propSelector);
+
+            styleEditorApply(target, null);
+
             if (additional) {
-                const styles = additionalStylesToObject(additional);
-                Object.keys(styles).forEach(key => {
+                Object.keys(additional).forEach(key => {
                     if (additionalStyles[key].length === 1) {
-                        styleEditor.apply(target, key);
+                        styleEditor.apply(resolvedPropSelector, key);
                     } else {
-                        // check other target: value pairs
                         const style = styleEditor.getStyle() || {};
                         let needToRemove = true;
                         additionalStyles[key].forEach(element => {
                             if (
-                                (target !== element.target || value !== element.value) &&
-                                style[target] &&
-                                style[element.target][element.value]
+                                (resolvedPropSelector !== element.propSelector ||
+                                    colorBindings[target].propName !== element.propName) &&
+                                style[element.propSelector] &&
+                                style[element.propSelector][element.propName]
                             ) {
                                 needToRemove = false;
                             }
                         });
                         if (needToRemove) {
-                            styleEditor.apply(target, key);
+                            styleEditor.apply(resolvedPropSelector, key);
                         }
                     }
                 });
