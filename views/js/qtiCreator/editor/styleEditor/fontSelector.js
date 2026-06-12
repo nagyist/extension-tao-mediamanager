@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2026 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -22,10 +22,9 @@ define([
     'lodash',
     'json!taoQtiItem/qtiCreator/editor/resources/font-stacks.json',
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
-    'taoMediaManager/qtiCreator/editor/styleEditor/fontFamilyValueResolver',
     'i18n',
     'select2'
-], function ($, _, fontStacks, styleEditor, fontFamilyValueResolver, __) {
+], function ($, _, fontStacks, styleEditor, __) {
     'use strict';
 
     /**
@@ -77,7 +76,23 @@ define([
         };
 
         const resolveFontFamilyValue = function (style) {
-            return fontFamilyValueResolver.resolveFontFamilyValue(style, getCssVariablesRootSelector(), target);
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+            let shouldFireStyleChange = false;
+            let val = style[cssVariablesRootSelector] && style[cssVariablesRootSelector]['--styleeditor-font-family'];
+            if (!val) {
+                const propVal = style[target] && style[target]['font-family'];
+                if (propVal) {
+                    const normalizedVal = propVal.replace(' !important', '');
+                    const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
+                    if (varMatch && style[cssVariablesRootSelector]) {
+                        val = style[cssVariablesRootSelector][varMatch[1].trim()];
+                    } else if (!normalizedVal.startsWith('var(')) {
+                        val = normalizedVal;
+                        shouldFireStyleChange = true; // migrate older stylesheets
+                    }
+                }
+            }
+            return { val, shouldFireStyleChange };
         };
 
         $selector.empty();
