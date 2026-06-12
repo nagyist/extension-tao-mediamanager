@@ -91,10 +91,11 @@ define([
             input = colorPicker.find('.color-picker-input'),
             resetButtons = colorPicker.find('.reset-button'),
             colorTriggers = colorPicker.find('.color-trigger'),
-            colorTriggerLabels = colorPicker.find('label'),
             $doc = $(document),
             additionalStyles = {};
-        let widgetObj;
+        let widgetObj,
+            currentTarget;
+        const eventNs = `.styleeditorColorSelector.${$container.attr('id')}`;
 
         const resolveSelector = function (selector) {
             return styleEditor.replaceHashClass(styleEditor.replaceMainClass(selector));
@@ -113,7 +114,7 @@ define([
          * @param {JQueryElement} trigger
          */
         const setTitle = function (trigger) {
-            titleElement.text(trigger.parent().find('label').text());
+            titleElement.text(trigger.parent().find('.truncate').first().text() || trigger.attr('aria-label'));
         };
 
         const applyAdditionalStyles = function (propSelector, additional, val) {
@@ -126,6 +127,9 @@ define([
         };
 
         const styleEditorApply = function (target, val) {
+            if (!target || !colorBindings[target]) {
+                return;
+            }
             const { varName, propSelector, propName, additional } = colorBindings[target];
             const resolvedPropSelector = resolveSelector(propSelector);
             const cssVariablesRootSelector = getCssVariablesRootSelector();
@@ -147,6 +151,10 @@ define([
                 const $trigger = $(this),
                     target = $trigger.data('target'),
                     style = styleEditor.getStyle() || {};
+
+                if (!target || !colorBindings[target]) {
+                    return;
+                }
 
                 let shouldFireStyleChange = false;
                 const { varName, propSelector, propName } = colorBindings[target];
@@ -200,19 +208,20 @@ define([
 
         // event received from modified farbtastic
         widget.on('colorchange.farbtastic', function (e, color) {
-            styleEditorApply(widget.prop('target'), color);
+            if (!currentTarget) {
+                return;
+            }
+            styleEditorApply(currentTarget, color);
             setTriggerColor();
         });
 
         // open color picker
         setTriggerColor();
         collectCommonAdditionalStyles();
-        colorTriggers.add(colorTriggerLabels).on('click', function () {
-            const $tmpTrigger = $(this),
-                $trigger =
-                    this.nodeName.toLowerCase() === 'label' ? $tmpTrigger.parent().find('.color-trigger') : $tmpTrigger;
+        colorTriggers.on('click', function () {
+            const $trigger = $(this);
 
-            widget.prop('target', $trigger.data('target'));
+            currentTarget = $trigger.data('target');
             widgetBox.hide();
             setTitle($trigger);
             widgetObj.setColor(rgbToHex($trigger.css('background-color')));
@@ -220,23 +229,23 @@ define([
         });
 
         // close color picker, when clicking somewhere outside or on the x
-        $doc.on('mouseup', function (e) {
+        $doc.off(`mouseup${eventNs}`).on(`mouseup${eventNs}`, function (e) {
             if ($(e.target).hasClass('closer')) {
                 widgetBox.hide();
-                return false;
+                return;
             }
 
             if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
                 widgetBox.hide();
-                return false;
+                return;
             }
         });
 
         // close color picker on escape
-        $doc.on('keyup', function (e) {
+        $doc.off(`keyup${eventNs}`).on(`keyup${eventNs}`, function (e) {
             if (e.keyCode === 27) {
                 widgetBox.hide();
-                return false;
+                return;
             }
         });
 
@@ -276,7 +285,7 @@ define([
             setTriggerColor();
         });
 
-        $doc.on('customcssloaded.styleeditor', setTriggerColor);
+        $doc.off(`customcssloaded.styleeditor${eventNs}`).on(`customcssloaded.styleeditor${eventNs}`, setTriggerColor);
     };
 
     return colorSelector;

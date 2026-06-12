@@ -185,8 +185,10 @@ define([
 
             if (isCustomProperty || isVarReference) {
                 value = normalizedValue;
-            } else if (!value.includes('!important')) {
-                value = `${value} !important`;
+            } else if (!/\s!important\s*$/i.test(normalizedValue)) {
+                value = `${normalizedValue} !important`;
+            } else {
+                value = normalizedValue;
             }
             style[selector][property] = value;
         }

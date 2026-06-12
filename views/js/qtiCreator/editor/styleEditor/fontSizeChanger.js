@@ -146,6 +146,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
                     styleEditorApply(itemFontSize);
                 }
             } else {
+                itemFontSize = parseInt($(itemSelector).css('font-size'), 10) || 14;
                 $input.val('');
             }
         });

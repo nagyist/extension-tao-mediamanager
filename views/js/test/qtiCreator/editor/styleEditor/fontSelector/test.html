@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Font Selector Style Editor test</title>
+        <base href="../../../../../../../../../../tao/views/" />
+        <link rel="stylesheet" type="text/css" href="js/lib/qunit/qunit.css" />
+        <script type="text/javascript" src="js/lib/qunit/qunit.js"></script>
+        <script type="text/javascript" src="js/lib/require.js"></script>
+        <script
+            type="text/javascript"
+            src="js/lib/blanket/blanket.min.js"
+            data-cover-flag="branchTracking"
+            data-cover-only="fontFamilyValueResolver.js, fontSelector.js"
+        ></script>
+
+        <script type="text/javascript">
+            QUnit.config.autostart = false;
+
+            require(['/tao/ClientConfig/config'], function () {
+                requirejs.config({
+                    map: {
+                        '*': {
+                            'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor':
+                                'taoMediaManager/test/qtiCreator/editor/styleEditor/fontSelector/styleEditorMock'
+                        }
+                    }
+                });
+
+                require(['taoMediaManager/test/qtiCreator/editor/styleEditor/fontSelector/test'], function () {
+                    QUnit.config.reorder = false;
+                    QUnit.start();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+            <div id="item-editor-item-property-bar">
+                <div class="reset-group">
+                    <select
+                        id="item-editor-font-selector"
+                        data-target="body div.qti-item hashClass *"
+                    ></select>
+                    <button type="button" data-role="font-selector-reset"></button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

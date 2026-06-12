@@ -61,6 +61,12 @@
             }
         }
         .item-editor-color-picker {
+            .color-trigger,
+            .reset-button {
+                border: none;
+                cursor: pointer;
+                padding: 0;
+            }
             .color-trigger {
                 background: none;
             }
