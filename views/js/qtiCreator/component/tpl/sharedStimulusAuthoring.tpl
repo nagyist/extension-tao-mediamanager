@@ -97,7 +97,7 @@
                                     <div class="clearfix">
                                         <span class="truncate">{{__ 'Table headings'}}</span>
                                         <button type="button" class="icon-eraser reset-button"
-                                            aria-label="{{__ 'Remove custom background color'}}"></button>
+                                            aria-label="{{__ 'Remove custom table headings color'}}"></button>
                                         <button type="button" class="color-trigger"
                                             data-target="table-heading-color"
                                             aria-label="{{__ 'Table headings'}}"></button>
