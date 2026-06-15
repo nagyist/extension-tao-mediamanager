@@ -204,11 +204,18 @@ define([
             });
         };
 
+        currentTarget = null;
+        widgetBox.hide();
+
+        widget.off(`colorchange.farbtastic${eventNs}`);
+        colorTriggers.off(`click${eventNs}`);
+        resetButtons.off(`click${eventNs}`);
+
         widgetObj = $.farbtastic(widget).linkTo(input);
 
         // event received from modified farbtastic
-        widget.on('colorchange.farbtastic', function (e, color) {
-            if (!currentTarget) {
+        widget.on(`colorchange.farbtastic${eventNs}`, function (e, color) {
+            if (!currentTarget || !color) {
                 return;
             }
             styleEditorApply(currentTarget, color);
@@ -218,13 +225,14 @@ define([
         // open color picker
         setTriggerColor();
         collectCommonAdditionalStyles();
-        colorTriggers.on('click', function () {
+        colorTriggers.on(`click${eventNs}`, function () {
             const $trigger = $(this);
+            const triggerColor = $trigger.css('background-color');
 
             currentTarget = $trigger.data('target');
             widgetBox.hide();
             setTitle($trigger);
-            widgetObj.setColor(rgbToHex($trigger.css('background-color')));
+            widgetObj.setColor(triggerColor ? rgbToHex(triggerColor) : input.val() || '#000000');
             widgetBox.show();
         });
 
@@ -250,7 +258,7 @@ define([
         });
 
         // reset to default
-        resetButtons.on('click', function () {
+        resetButtons.off(`click${eventNs}`).on(`click${eventNs}`, function () {
             const $this = $(this),
                 $colorTrigger = $this.parent().find('.color-trigger'),
                 target = $colorTrigger.data('target'),
