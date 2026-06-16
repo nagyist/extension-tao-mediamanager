@@ -134,7 +134,11 @@ define([
             const resolvedPropSelector = resolveSelector(propSelector);
             const cssVariablesRootSelector = getCssVariablesRootSelector();
 
-            styleEditor.apply(cssVariablesRootSelector, varName, val);
+            // For passages, apply custom property to the same selector where it's used (body div.qti-item)
+            // For text blocks, apply custom property to the text block selector
+            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : resolvedPropSelector;
+            
+            styleEditor.apply(customPropertySelector, varName, val);
             styleEditor.apply(resolvedPropSelector, propName, val ? `var(${varName})` : null);
             if (val) {
                 applyAdditionalStyles(resolvedPropSelector, additional, val);
@@ -159,14 +163,18 @@ define([
                 let shouldFireStyleChange = false;
                 const { varName, propSelector, propName } = colorBindings[target];
                 const resolvedPropSelector = resolveSelector(propSelector);
-                let val = style[cssVariablesRootSelector] && style[cssVariablesRootSelector][varName];
+                
+                // For passages, look for custom property in resolvedPropSelector; for text blocks in cssVariablesRootSelector
+                const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : resolvedPropSelector;
+                
+                let val = style[customPropertySelector] && style[customPropertySelector][varName];
                 if (!val) {
                     const propVal = style[resolvedPropSelector] && style[resolvedPropSelector][propName];
                     if (propVal) {
                         const normalizedVal = propVal.replace(' !important', '');
                         const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
-                        if (varMatch && style[cssVariablesRootSelector]) {
-                            val = style[cssVariablesRootSelector][varMatch[1].trim()];
+                        if (varMatch && style[customPropertySelector]) {
+                            val = style[customPropertySelector][varMatch[1].trim()];
                         } else {
                             val = normalizedVal;
                             shouldFireStyleChange = true; // migrate older stylesheets

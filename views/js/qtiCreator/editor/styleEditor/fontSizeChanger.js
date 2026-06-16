@@ -54,7 +54,12 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             const valStr = val ? `${val.toString()}px` : null;
             const varName = '--styleeditor-font-size';
             const cssVariablesRootSelector = getCssVariablesRootSelector();
-            styleEditor.apply(cssVariablesRootSelector, varName, valStr);
+            
+            // For passages, apply custom property to the same selector where it's used (itemSelector)
+            // For text blocks, apply custom property to the text block selector
+            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : itemSelector;
+            
+            styleEditor.apply(customPropertySelector, varName, valStr);
             styleEditor.apply(itemSelector, 'font-size', valStr ? `var(${varName})` : null);
             if (val) {
                 const figcaptionSize = val > 14 ? (val - 2).toString() : Math.min(val, 12).toString();
@@ -67,7 +72,11 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         const resolveFontSizeValue = function (style) {
             const cssVariablesRootSelector = getCssVariablesRootSelector();
             let shouldFireStyleChange = false;
-            let val = style[cssVariablesRootSelector] && style[cssVariablesRootSelector]['--styleeditor-font-size'];
+            
+            // For passages, look for custom property in itemSelector; for text blocks in cssVariablesRootSelector
+            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : itemSelector;
+            
+            let val = style[customPropertySelector] && style[customPropertySelector]['--styleeditor-font-size'];
             if (!val) {
                 let propVal = style[itemSelector] && style[itemSelector]['font-size'];
                 if (!propVal && style[itemSelectorOld]) {
@@ -76,8 +85,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
                 if (propVal) {
                     const normalizedVal = propVal.replace(' !important', '');
                     const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
-                    if (varMatch && style[cssVariablesRootSelector]) {
-                        val = style[cssVariablesRootSelector][varMatch[1].trim()];
+                    if (varMatch && style[customPropertySelector]) {
+                        val = style[customPropertySelector][varMatch[1].trim()];
                     } else if (!normalizedVal.startsWith('var(')) {
                         val = normalizedVal;
                         shouldFireStyleChange = true; // migrate older stylesheets
