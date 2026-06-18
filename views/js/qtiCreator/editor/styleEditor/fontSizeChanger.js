@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2021-2026 (original work) Open Assessment Technologies SA ;
  *
  */
 
@@ -30,38 +30,81 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
      * @param {JQuery} $container
      */
     const fontSizeChanger = function ($container) {
+        const isTextBlockPanel = $container.is('#item-editor-text-property-bar');
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer');
-        let itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target'));
-        itemSelector = styleEditor.replaceHashClass(itemSelector);
+        const itemSelector = styleEditor.replaceHashClass(
+            styleEditor.replaceMainClass($fontSizeChanger.data('target'))
+        );
+        const itemSelectorOld = itemSelector.replace(' *', ''); // previous version was without *
         const figcaptionSelector = `${itemSelector} figure figcaption`;
         const $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]');
         const $input = $container.find('.item-editor-font-size-text');
         let itemFontSize = parseInt($(itemSelector).css('font-size'), 10) || 14;
 
-        // initiate font-size for Block
+        const getCssVariablesRootSelector = function () {
+            if (isTextBlockPanel) {
+                return styleEditor.replaceHashClass(
+                    styleEditor.replaceMainClass('body div.qti-item .custom-text-box.hashClass')
+                );
+            }
+            return styleEditor.getConfig().cssVariablesRootSelector;
+        };
+
+        const styleEditorApply = function (val) {
+            const valStr = val ? `${val.toString()}px` : null;
+            const varName = '--styleeditor-font-size';
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+            
+            // For passages, apply custom property to the same selector where it's used (itemSelector)
+            // For text blocks, apply custom property to the text block selector
+            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : itemSelector;
+            
+            styleEditor.apply(customPropertySelector, varName, valStr);
+            styleEditor.apply(itemSelector, 'font-size', valStr ? `var(${varName})` : null);
+            if (val) {
+                const figcaptionSize = val > 14 ? (val - 2).toString() : Math.min(val, 12).toString();
+                styleEditor.apply(figcaptionSelector, 'font-size', `${figcaptionSize}px`);
+            } else {
+                styleEditor.apply(figcaptionSelector, 'font-size');
+            }
+        };
+
+        const resolveFontSizeValue = function (style) {
+            const cssVariablesRootSelector = getCssVariablesRootSelector();
+            let shouldFireStyleChange = false;
+            
+            // For passages, look for custom property in itemSelector; for text blocks in cssVariablesRootSelector
+            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : itemSelector;
+            
+            let val = style[customPropertySelector] && style[customPropertySelector]['--styleeditor-font-size'];
+            if (!val) {
+                let propVal = style[itemSelector] && style[itemSelector]['font-size'];
+                if (!propVal && style[itemSelectorOld]) {
+                    propVal = style[itemSelectorOld]['font-size'];
+                }
+                if (propVal) {
+                    const normalizedVal = propVal.replace(' !important', '');
+                    const varMatch = normalizedVal.match(/^var\(([^)]+)\)/);
+                    if (varMatch && style[customPropertySelector]) {
+                        val = style[customPropertySelector][varMatch[1].trim()];
+                    } else if (!normalizedVal.startsWith('var(')) {
+                        val = normalizedVal;
+                        shouldFireStyleChange = true; // migrate older stylesheets
+                    }
+                }
+            }
+            return { val, shouldFireStyleChange };
+        };
+
         const styles = styleEditor.getStyle() || {};
-        const itemSelectorOld = itemSelector.replace(' *', ''); // previous version was without *
-        if (styles[itemSelector] && styles[itemSelector]['font-size']) {
-            itemFontSize = parseInt(styles[itemSelector]['font-size'], 10);
-            $input.val(itemFontSize);
-        } else if (styles[itemSelectorOld] && styles[itemSelectorOld]['font-size']) {
-            itemFontSize = parseInt(styles[itemSelectorOld]['font-size'], 10);
+        const { val: initialFontSize } = resolveFontSizeValue(styles);
+        if (initialFontSize) {
+            itemFontSize = parseInt(initialFontSize, 10);
             $input.val(itemFontSize);
         } else {
             $input.val('');
         }
-        /**
-         * Writes new font size to virtual style sheet
-         */
-        const resizeFont = function () {
-            styleEditor.apply(itemSelector, 'font-size', `${itemFontSize.toString()}px`);
-            const figcaptionSize = itemFontSize > 14 ? (itemFontSize - 2).toString() : Math.min(itemFontSize, 12).toString();
-            styleEditor.apply(figcaptionSelector, 'font-size', `${figcaptionSize}px`);
-        };
 
-        /**
-         * Handle input field
-         */
         $fontSizeChanger
             .find('button')
             .off('click')
@@ -75,57 +118,44 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
                 } else {
                     itemFontSize++;
                 }
-                resizeFont();
+                styleEditorApply(itemFontSize);
                 $input.val(itemFontSize);
                 $(this).parent().blur();
             });
 
-        /**
-         * Apply font size on blur
-         */
         $input.off('blur').on('blur', function () {
             if (this.value) {
                 itemFontSize = parseInt(this.value, 10);
-                resizeFont();
+                styleEditorApply(itemFontSize);
             } else {
-                styleEditor.apply(itemSelector, 'font-size');
-                styleEditor.apply(figcaptionSelector, 'font-size');
+                styleEditorApply(null);
             }
         });
 
-        /**
-         * Apply font size on enter
-         * Disallows invalid characters
-         */
         $input.off('keydown').on('keydown', function (e) {
-            var c = e.keyCode;
+            const c = e.keyCode;
             if (c === 13) {
                 $input.trigger('blur');
             }
             return _.includes([8, 37, 39, 46], c) || (c >= 48 && c <= 57) || (c >= 96 && c <= 105);
         });
 
-        /**
-         * Remove font size from virtual style sheet
-         */
         $resetBtn.off('click').on('click', function () {
-            styleEditor.apply(itemSelector, 'font-size');
-            styleEditor.apply(figcaptionSelector, 'font-size');
             $input.val('');
-            itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
+            styleEditorApply(null);
+            itemFontSize = parseInt($(itemSelector).css('font-size'), 10) || 14;
         });
 
-        /**
-         * style loaded from style sheet
-         */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
-            if (style[itemSelector] && style[itemSelector]['font-size']) {
-                itemFontSize = parseInt(style[itemSelector]['font-size'], 10);
+            const { val, shouldFireStyleChange } = resolveFontSizeValue(style);
+            if (val) {
+                itemFontSize = parseInt(val, 10);
                 $input.val(itemFontSize);
-            } else if (style[itemSelectorOld] && style[itemSelectorOld]['font-size']) {
-                itemFontSize = parseInt(style[itemSelectorOld]['font-size'], 10);
-                $input.val(itemFontSize);
+                if (shouldFireStyleChange) {
+                    styleEditorApply(itemFontSize);
+                }
             } else {
+                itemFontSize = parseInt($(itemSelector).css('font-size'), 10) || 14;
                 $input.val('');
             }
         });
