@@ -72,7 +72,7 @@
                                 <div class="reset-group">
                                     <div class="clearfix">
                                         <span class="truncate">{{__ 'Background color'}}</span>
-                                        <button type="button" class="icon-eraser reset-button" data-value="background-color"
+                                        <button type="button" class="icon-eraser reset-button"
                                             aria-label="{{__ 'Remove custom background color'}}"></button>
                                         <button type="button" class="color-trigger"
                                             data-target="background-color"
@@ -80,25 +80,25 @@
                                     </div>
                                     <div class="clearfix">
                                         <span class="truncate">{{__ 'Text color'}}</span>
-                                        <button type="button" class="icon-eraser reset-button" data-value="color"
+                                        <button type="button" class="icon-eraser reset-button"
                                             aria-label="{{__ 'Remove custom text color'}}"></button>
-                                        <button type="button" class="color-trigger" id="initial-color" data-value="color"
+                                        <button type="button" class="color-trigger" id="initial-color"
                                             data-target="text-color"
                                             aria-label="{{__ 'Text color'}}"></button>
                                     </div>
                                     <div class="clearfix">
                                         <span class="truncate">{{__ 'Border color'}}</span>
-                                        <button type="button" class="icon-eraser reset-button" data-value="color"
+                                        <button type="button" class="icon-eraser reset-button"
                                             aria-label="{{__ 'Remove custom border color'}}"></button>
                                         <button type="button" class="color-trigger"
-                                            data-target="border-color" data-value="border-color"
+                                            data-target="border-color"
                                             aria-label="{{__ 'Border color'}}"></button>
                                     </div>
                                     <div class="clearfix">
                                         <span class="truncate">{{__ 'Table headings'}}</span>
-                                        <button type="button" class="icon-eraser reset-button" data-value="color"
+                                        <button type="button" class="icon-eraser reset-button"
                                             aria-label="{{__ 'Remove custom table headings color'}}"></button>
-                                        <button type="button" class="color-trigger" data-value="background-color"
+                                        <button type="button" class="color-trigger"
                                             data-target="table-heading-color"
                                             aria-label="{{__ 'Table headings'}}"></button>
                                     </div>
