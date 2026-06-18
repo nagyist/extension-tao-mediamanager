@@ -178,14 +178,17 @@ define([
                 delete style[selector];
             }
         } else {
-            // align with item authoring: no !important on CSS variables or var() references
+            // align with item authoring: no !important on CSS variables; var() may include it when explicitly set
             const isCustomProperty = property.startsWith('--');
             const normalizedValue = String(value).replace(/\s*!important\s*$/i, '').trim();
             const isVarReference = /^var\(/i.test(normalizedValue);
+            const hasImportant = /\s!important\s*$/i.test(String(value));
 
-            if (isCustomProperty || isVarReference) {
+            if (isCustomProperty) {
                 value = normalizedValue;
-            } else if (!/\s!important\s*$/i.test(normalizedValue)) {
+            } else if (isVarReference) {
+                value = hasImportant ? `${normalizedValue} !important` : normalizedValue;
+            } else if (!hasImportant) {
                 value = `${normalizedValue} !important`;
             } else {
                 value = normalizedValue;

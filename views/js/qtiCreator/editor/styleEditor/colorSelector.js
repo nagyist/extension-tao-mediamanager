@@ -52,7 +52,8 @@ define([
         'table-heading-color': {
             varName: '--styleeditor-table-heading-bg-color',
             propSelector: 'body div.qti-item table th',
-            propName: 'background-color'
+            propName: 'background-color',
+            important: true
         }
     };
 
@@ -77,7 +78,8 @@ define([
         'table-heading-color': {
             varName: '--styleeditor-table-heading-bg-color',
             propSelector: 'body div.qti-item .custom-text-box.hashClass table th',
-            propName: 'background-color'
+            propName: 'background-color',
+            important: true
         }
     };
 
@@ -105,7 +107,14 @@ define([
             if (isTextBlockPanel) {
                 return resolveSelector('body div.qti-item .custom-text-box.hashClass');
             }
-            return styleEditor.getConfig().cssVariablesRootSelector;
+            return resolveSelector('body div.qti-item');
+        };
+
+        const getCustomPropertySelector = function (target, resolvedPropSelector, cssVariablesRootSelector) {
+            if (target === 'table-heading-color') {
+                return resolvedPropSelector;
+            }
+            return cssVariablesRootSelector;
         };
 
         /**
@@ -130,16 +139,21 @@ define([
             if (!target || !colorBindings[target]) {
                 return;
             }
-            const { varName, propSelector, propName, additional } = colorBindings[target];
+            const { varName, propSelector, propName, additional, important } = colorBindings[target];
             const resolvedPropSelector = resolveSelector(propSelector);
             const cssVariablesRootSelector = getCssVariablesRootSelector();
+            const customPropertySelector = getCustomPropertySelector(
+                target,
+                resolvedPropSelector,
+                cssVariablesRootSelector
+            );
+            const propValue = val ? (important ? `var(${varName}) !important` : `var(${varName})`) : null;
 
-            // For passages, apply custom property to the same selector where it's used (body div.qti-item)
-            // For text blocks, apply custom property to the text block selector
-            const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : resolvedPropSelector;
-            
             styleEditor.apply(customPropertySelector, varName, val);
-            styleEditor.apply(resolvedPropSelector, propName, val ? `var(${varName})` : null);
+            if (customPropertySelector !== cssVariablesRootSelector) {
+                styleEditor.apply(cssVariablesRootSelector, varName, null);
+            }
+            styleEditor.apply(resolvedPropSelector, propName, propValue);
             if (val) {
                 applyAdditionalStyles(resolvedPropSelector, additional, val);
             }
@@ -163,11 +177,19 @@ define([
                 let shouldFireStyleChange = false;
                 const { varName, propSelector, propName } = colorBindings[target];
                 const resolvedPropSelector = resolveSelector(propSelector);
-                
-                // For passages, look for custom property in resolvedPropSelector; for text blocks in cssVariablesRootSelector
-                const customPropertySelector = isTextBlockPanel ? cssVariablesRootSelector : resolvedPropSelector;
-                
+                const customPropertySelector = getCustomPropertySelector(
+                    target,
+                    resolvedPropSelector,
+                    cssVariablesRootSelector
+                );
+
                 let val = style[customPropertySelector] && style[customPropertySelector][varName];
+                if (!val && customPropertySelector !== cssVariablesRootSelector && style[cssVariablesRootSelector]) {
+                    val = style[cssVariablesRootSelector][varName];
+                    if (val) {
+                        shouldFireStyleChange = true;
+                    }
+                }
                 if (!val) {
                     const propVal = style[resolvedPropSelector] && style[resolvedPropSelector][propName];
                     if (propVal) {
