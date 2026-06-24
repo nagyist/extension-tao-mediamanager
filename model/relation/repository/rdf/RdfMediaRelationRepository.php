@@ -34,12 +34,12 @@ use oat\oatbox\service\ConfigurableService;
 use oat\search\base\exception\SearchGateWayExeption;
 use oat\search\base\QueryInterface;
 use oat\search\helper\SupportedOperatorHelper;
+use oat\tao\model\resources\relation\FindAllQuery;
 use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use PDO;
 
@@ -64,7 +64,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
             return $this->findMediaWithRelations($this->getClass($findAllQuery->getClassId()));
         }
 
-        return $this->findAllByMedia($findAllQuery->getMediaId());
+        return $this->findAllByMedia((string) $findAllQuery->getSourceId());
     }
 
     /**

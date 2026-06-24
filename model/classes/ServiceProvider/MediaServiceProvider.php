@@ -44,6 +44,10 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\AssetDeleter;
+use oat\taoMediaManager\model\TextReaderReferencesExtractorAdapter;
+use oat\taoMediaManager\model\TextReaderReferencesExtractorInterface;
+use oat\taoMediaManager\model\TextReaderInteractionQtiUpdater;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
@@ -54,6 +58,10 @@ use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourc
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
+use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextReaderReferencesExtractor;
+use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
+use oat\taoQtiItem\model\qti\Service as QtiService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -210,6 +218,49 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 ]
             );
 
+        $services
+            ->set(QtiTextReaderReferencesExtractor::class, QtiTextReaderReferencesExtractor::class);
+
+        $services
+            ->set(TextReaderReferencesExtractorAdapter::class, TextReaderReferencesExtractorAdapter::class)
+            ->args(
+                [
+                    service(QtiTextReaderReferencesExtractor::class),
+                ]
+            );
+
+        $services
+            ->set(TextReaderReferencesExtractorInterface::class, TextReaderReferencesExtractorAdapter::class)
+            ->args(
+                [
+                    service(QtiTextReaderReferencesExtractor::class),
+                ]
+            );
+
+        $services->set(ElementReferencesExtractor::class, ElementReferencesExtractor::class)
+            ->args(
+                [
+                    service(QtiTextReaderReferencesExtractor::class),
+                ]
+            );
+
+        $services
+            ->set(TextReaderInteractionQtiUpdater::class, TextReaderInteractionQtiUpdater::class)
+            ->public()
+            ->args(
+                [
+                    service(MediaRelationRepositoryInterface::SERVICE_ID),
+                    service(QtiService::class),
+                    service(UpdatedItemEventDispatcher::class),
+                    service(TextReaderReferencesExtractorAdapter::class),
+                ]
+            )
+            ->call(
+                'setLogger',
+                [
+                    service(LoggerService::SERVICE_ID),
+                ]
+            );
 
         $services->set(TranscriptionMimeTypesProvider::class)
             ->public();

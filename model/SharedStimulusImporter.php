@@ -108,9 +108,10 @@ class SharedStimulusImporter extends ConfigurableService implements
      */
     public function import($class, $form, $userId = null)
     {
-        $uploadedFile = $this->fetchUploadedFile($form);
+        $uploadedFile = null;
 
         try {
+            $uploadedFile = $this->fetchUploadedFile($form);
             $service = $this->getMediaService();
             $classUri = $class->getUri();
 
@@ -213,7 +214,9 @@ class SharedStimulusImporter extends ConfigurableService implements
             $this->logError($e->getMessage());
         }
 
-        $this->getUploadService()->remove($uploadedFile);
+        if ($uploadedFile !== null) {
+            $this->getUploadService()->remove($uploadedFile);
+        }
 
         return $report;
     }
