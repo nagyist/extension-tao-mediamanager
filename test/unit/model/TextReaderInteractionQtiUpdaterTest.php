@@ -325,7 +325,7 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
         $responseDeclaration = new ResponseDeclaration();
         $responseDeclaration->setIdentifier('RESPONSE_' . $interaction->getSerial());
         $item->addResponse($responseDeclaration);
-        $interaction->setAttribute('responseIdentifier', $responseDeclaration);
+        $interaction->setAttribute('responseIdentifier', $responseDeclaration->getIdentifier());
 
         return $item;
     }
