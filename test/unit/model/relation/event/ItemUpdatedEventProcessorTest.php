@@ -41,6 +41,7 @@ class ItemUpdatedEventProcessorTest extends TestCase
     private const MEDIA_LINK_1_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d4';
     private const MEDIA_LINK_2_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d5';
     private const MEDIA_LINK_3_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d6';
+    private const MEDIA_LINK_4_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d7';
     // phpcs:enable Generic.Files.LineLength
 
     /** @var ItemUpdatedEventProcessor */
@@ -78,6 +79,7 @@ class ItemUpdatedEventProcessorTest extends TestCase
                     self::MEDIA_LINK_1_PARSED,
                     self::MEDIA_LINK_2_PARSED,
                     self::MEDIA_LINK_3_PARSED,
+                    self::MEDIA_LINK_4_PARSED,
                 ]
             );
 
@@ -88,6 +90,7 @@ class ItemUpdatedEventProcessorTest extends TestCase
                     self::MEDIA_LINK_1_PARSED,
                     self::MEDIA_LINK_2_PARSED,
                     self::MEDIA_LINK_3_PARSED,
+                    self::MEDIA_LINK_4_PARSED,
                 ]
             );
 
@@ -103,6 +106,10 @@ class ItemUpdatedEventProcessorTest extends TestCase
                     ],
                     'imgElementReferences' => [
                         self::MEDIA_LINK_3
+                    ],
+                    'textReaderElementReferences' => [
+                        self::MEDIA_LINK_1,
+                        'local/image.png',
                     ]
                 ]
             )
