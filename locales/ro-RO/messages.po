@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:58\n"
+"PO-Revision-Date: 2026-07-03 14:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ro\n"
@@ -21,258 +21,258 @@ msgstr ""
 "Language-Team: Romanian\n"
 
 msgid "%s media on this environment"
-msgstr ""
+msgstr "%s media pe acest mediu"
 
 msgid "%s media successfully modified"
-msgstr ""
+msgstr "%s media a fost modificat"
 
 msgid "%s media to modify"
-msgstr ""
+msgstr "%s media de modificat"
 
 msgid "Add a media file"
-msgstr ""
+msgstr "Adăugați un fișier media"
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr ""
+msgstr "A apărut o eroare. Vă rugăm să contactaţi administratorul."
 
 msgid "Are you sure you want to delete this"
-msgstr ""
+msgstr "Sunteţi sigur că doriţi să ştergeţi acest lucru"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr ""
+msgstr "Sunteţi sigur că doriţi să ştergeţi această clasă şi tot conţinutul său?"
 
 #, tao-public
 msgid "Assets"
-msgstr ""
+msgstr "Active"
 
 #, tao-public
 msgid "Authoring"
-msgstr ""
+msgstr "Autorizare"
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "Înapoi la gestionarea activelor"
 
 msgid "Block"
-msgstr ""
+msgstr "Blochează"
 
 msgid "Center"
-msgstr ""
+msgstr "Centru"
 
 msgid "Define item language."
-msgstr ""
+msgstr "Definiți limba elementului."
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Ștergere"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr ""
+msgstr "Ștergerea acestei clase va întrerupe elementele și testele care le folosesc în prezent."
 
 msgid "Edit Instance"
-msgstr ""
+msgstr "Editează Instanța"
 
 msgid "Edited %s"
-msgstr ""
+msgstr "Editat %s"
 
 msgid "Element Properties"
-msgstr ""
+msgstr "Proprietăți element"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Exportă"
 
 msgid "Export Media as Zip file"
-msgstr ""
+msgstr "Exportă media ca fișier Zip"
 
 msgid "Fail to edit shared stimulus"
-msgstr ""
+msgstr "Eșec la editarea stimulentului comun"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr ""
+msgstr "Eșec la editarea stimulentului comun"
 
 msgid "Fail to import media"
-msgstr ""
+msgstr "Importarea media a eșuat"
 
 msgid "Fail to import Shared Stimulus"
-msgstr ""
+msgstr "Eșec la importarea stimulentului comun"
 
 msgid "File"
-msgstr ""
+msgstr "Fişier"
 
 msgid "File name"
-msgstr ""
+msgstr "Nume fișier"
 
 msgid "Forbidden action"
-msgstr ""
+msgstr "Acțiune interzisă"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importă"
 
 msgid "Imported %s"
-msgstr ""
+msgstr "Importat %s"
 
 msgid "Imported new file"
-msgstr ""
+msgstr "Fișier nou importat"
 
 msgid "Initial import"
-msgstr ""
+msgstr "Import inițial"
 
 msgid "Inline Interactions"
-msgstr ""
+msgstr "Interacţiuni integrate"
 
 msgid "Instance saved"
-msgstr ""
+msgstr "Instanță salvată"
 
 msgid "is currently used in"
-msgstr ""
+msgstr "este folosit în prezent"
 
 msgid "Issue while modifying %s"
-msgstr ""
+msgstr "Problemă în timpul modificării %s"
 
 msgid "item(s)"
-msgstr ""
+msgstr "articol(e)"
 
 msgid "Language"
-msgstr ""
+msgstr "Limba"
 
 msgid "Left"
-msgstr ""
+msgstr "Stânga"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr ""
+msgstr "Gestionare active"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Gestionare schemă"
 
 msgid "Media imported"
-msgstr ""
+msgstr "Media importată"
 
 msgid "Media imported successfully"
-msgstr ""
+msgstr "Media importată cu succes"
 
 #, tao-public
 msgid "Media Manager"
-msgstr ""
+msgstr "Manager Media"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr ""
+msgstr "Extensie Media Manager"
 
 msgid "Media Options"
-msgstr ""
+msgstr "Opțiuni media"
 
 msgid "Media successfully exported."
-msgstr ""
+msgstr "Media exportată cu succes."
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Mutare"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Clasa noua"
 
 #, tao-public
 msgid "New passage"
-msgstr ""
+msgstr "Pasaj nou"
 
 msgid "No file found for this media"
-msgstr ""
+msgstr "Nu s-a găsit niciun fișier pentru acest fișier media"
 
 msgid "Passage Properties"
-msgstr ""
+msgstr "Proprietăți pasaj"
 
 msgid "Please delete the subclasses before."
-msgstr ""
+msgstr "Vă rugăm să ştergeţi subclasele de dinainte."
 
 msgid "Preview"
-msgstr ""
+msgstr "Previzualizare"
 
 msgid "Preview the item"
-msgstr ""
+msgstr "Previzualizați elementul"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Proprietăți"
 
 msgid "Replace Asset"
-msgstr ""
+msgstr "Replace Asset"
 
 msgid "Resource deleted"
-msgstr ""
+msgstr "Resursă ștearsă"
 
 msgid "Right"
-msgstr ""
+msgstr "Dreapta"
 
 msgid "Save"
-msgstr ""
+msgstr "Salvează"
 
 msgid "Save the asset"
-msgstr ""
+msgstr "Salvează activul"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr ""
+msgstr "Setați un nume de clasă CSS pentru a personaliza stilul de afișare."
 
 msgid "Shared Stimulus"
-msgstr ""
+msgstr "Stimulent partajat"
 
 msgid "Shared Stimulus edited successfully"
-msgstr ""
+msgstr "Stimulus partajat editat cu succes"
 
 msgid "Shared Stimulus imported successfully"
-msgstr ""
+msgstr "Stimulări partajate importate cu succes"
 
 msgid "some text ..."
-msgstr ""
+msgstr "un text ..."
 
 msgid "Text Block"
-msgstr ""
+msgstr "Bloc text"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "Clasa CSS pentru bloc text"
 
 msgid "The class"
-msgstr ""
+msgstr "Clasa"
 
 msgid "This"
-msgstr ""
+msgstr "Asta"
 
 msgid "Unable to delete the selected resource"
-msgstr ""
+msgstr "Imposibil de șters resursa selectată"
 
 msgid "Unable to extract the archive"
-msgstr ""
+msgstr "Imposibil de extras arhiva"
 
 msgid "Unable to import"
-msgstr ""
+msgstr "Imposibil de importat"
 
 msgid "Upload Media"
-msgstr ""
+msgstr "Încarcă media"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr ""
+msgstr "Utilizare: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
-msgstr ""
+msgstr "Avertizare"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr ""
+msgstr "care conține active care sunt utilizate în altă parte."
 
 msgid "You are about to delete the class"
-msgstr ""
+msgstr "Urmează să ştergeţi clasa"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr ""
+msgstr "încercaţi să ştergeţi este prea mare şi conţine prea multe subclase."
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr ""
+msgstr "Nu poți încărca un fișier zip ca fișier media"
 
 msgid "Your passage is saved"
-msgstr ""
+msgstr "Pasajul dvs. a fost salvat"
 
 msgid "Zip"
-msgstr ""
+msgstr "Zip"
 
