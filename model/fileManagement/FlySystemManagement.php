@@ -22,11 +22,11 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
+use GuzzleHttp\Psr7\Utils;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FilesystemException;
 use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\service\ConfigurableService;
-use Slim\Http\Stream;
 use Psr\Http\Message\StreamInterface;
 use oat\oatbox\filesystem\FileSystemService;
 
@@ -64,14 +64,23 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         }
     }
 
-    public function getFileSize($link)
+    public function getFileSize(string $link): ?int
     {
+        $filesystem = $this->getFilesystem();
         try {
-            return $this->getFilesystem()->fileSize($link);
+            if (method_exists($filesystem, 'fileSize')) {
+                return $filesystem->fileSize($link);
+            }
+
+            if (method_exists($filesystem, 'getSize')) {
+                return $filesystem->getSize($link);
+            }
         } catch (FilesystemException $e) {
             $this->logWarning($e->getMessage());
             return null;
         }
+
+        return null;
     }
 
     /**
@@ -82,7 +91,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     public function getFileStream($link)
     {
         $resource = $this->getFilesystem()->readStream($link);
-        return new Stream($resource);
+        return Utils::streamFor($resource);
     }
 
     /**

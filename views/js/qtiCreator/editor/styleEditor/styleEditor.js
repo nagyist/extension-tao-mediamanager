@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2021-2026 (original work) Open Assessment Technologies SA ;
  *
  */
 
@@ -178,8 +178,21 @@ define([
                 delete style[selector];
             }
         } else {
-            // add this rule
-            value = value.includes('!important') ? value : `${value} !important`;
+            // align with item authoring: no !important on CSS variables; var() may include it when explicitly set
+            const isCustomProperty = property.startsWith('--');
+            const normalizedValue = String(value).replace(/\s*!important\s*$/i, '').trim();
+            const isVarReference = /^var\(/i.test(normalizedValue);
+            const hasImportant = /\s!important\s*$/i.test(String(value));
+
+            if (isCustomProperty) {
+                value = normalizedValue;
+            } else if (isVarReference) {
+                value = hasImportant ? `${normalizedValue} !important` : normalizedValue;
+            } else if (!hasImportant) {
+                value = `${normalizedValue} !important`;
+            } else {
+                value = normalizedValue;
+            }
             style[selector][property] = value;
         }
 
@@ -453,7 +466,7 @@ define([
     const init = function (item, config) {
         let href;
 
-        globalConfig = config;
+        globalConfig = Object.assign({ cssVariablesRootSelector: '.qti-item' }, config);
         // promise
         currentItem = item;
 
@@ -538,6 +551,10 @@ define([
         $(document).off('customcssloaded.styleeditor');
     };
 
+    const getConfig = function () {
+        return globalConfig;
+    };
+
     return {
         apply: apply,
         save: save,
@@ -557,6 +574,7 @@ define([
         setMainClass: setMainClass,
         generateMainClass: generateMainClass,
         replaceMainClass: replaceMainClass,
-        clearCache: clearCache
+        clearCache: clearCache,
+        getConfig: getConfig
     };
 });

@@ -33,6 +33,7 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
     private const INCLUDE_ELEMENT_REFERENCES_KEY = 'includeElementReferences';
     private const OBJECT_ELEMENT_REFERENCES_KEY = 'objectElementReferences';
     private const IMG_ELEMENT_REFERENCES_KEY = 'imgElementReferences';
+    private const TEXT_READER_ELEMENT_REFERENCES_KEY = 'textReaderElementReferences';
 
     /**
      * @inheritDoc
@@ -55,7 +56,8 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
     {
         return array_key_exists(self::INCLUDE_ELEMENT_REFERENCES_KEY, $data)
             || array_key_exists(self::OBJECT_ELEMENT_REFERENCES_KEY, $data)
-            || array_key_exists(self::IMG_ELEMENT_REFERENCES_KEY, $data);
+            || array_key_exists(self::IMG_ELEMENT_REFERENCES_KEY, $data)
+            || array_key_exists(self::TEXT_READER_ELEMENT_REFERENCES_KEY, $data);
     }
 
     private function getAggregatedMediaIds(array $data): array
@@ -64,7 +66,8 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
             array_merge(
                 $data[self::INCLUDE_ELEMENT_REFERENCES_KEY] ?? [],
                 $data[self::OBJECT_ELEMENT_REFERENCES_KEY] ?? [],
-                $data[self::IMG_ELEMENT_REFERENCES_KEY] ?? []
+                $data[self::IMG_ELEMENT_REFERENCES_KEY] ?? [],
+                $data[self::TEXT_READER_ELEMENT_REFERENCES_KEY] ?? []
             )
         );
     }
