@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:58\n"
+"PO-Revision-Date: 2026-07-03 14:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk\n"
@@ -21,52 +21,52 @@ msgstr ""
 "Language-Team: Slovak\n"
 
 msgid "%s media on this environment"
-msgstr "%s médiá v tomto prostredí"
+msgstr "%s multimediálne súbory v tomto prostredí"
 
 msgid "%s media successfully modified"
-msgstr "%s médium úspešne upravené"
+msgstr "%s multimédia úspešne upravené"
 
 msgid "%s media to modify"
-msgstr "%s médiá na úpravu"
+msgstr "%s multimédiá na úpravu"
 
 msgid "Add a media file"
-msgstr "Pridať mediálny súbor"
+msgstr "Pridať multimediálny súbor"
 
 msgid "An error has occurred. Please contact your administrator."
 msgstr "Vyskytla sa chyba. Kontaktujte, prosím, svojho administrátora."
 
 msgid "Are you sure you want to delete this"
-msgstr "Naozaj chcete toto odstrániť"
+msgstr "Naozaj chcete toto odstrániť?"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr "Naozaj chcete odstrániť túto triedu a všetok jej obsah?"
+msgstr "Naozaj chcete odstrániť tento priečinok a všetok jeho obsah?"
 
 #, tao-public
 msgid "Assets"
-msgstr "Aktíva"
+msgstr "Zdroje"
 
 #, tao-public
 msgid "Authoring"
 msgstr "Autorstvo"
 
 msgid "Back to Manage Assets"
-msgstr "Späť na správu aktív"
+msgstr "Späť na Správu zdrojov"
 
 msgid "Block"
 msgstr "Blok"
 
 msgid "Center"
-msgstr "Centrum"
+msgstr "Vycentrovať"
 
 msgid "Define item language."
-msgstr "Definujte jazyk položky."
+msgstr "Nastavte jazyk položky."
 
 #, tao-public
 msgid "Delete"
 msgstr "Odstrániť"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr "Odstránenie tejto triedy pokazí položky a testy, ktoré ich momentálne používajú."
+msgstr "Vymazaním tohto priečinka sa poškodia položky a testy, ktoré ich momentálne používajú."
 
 msgid "Edit Instance"
 msgstr "Upraviť inštanciu"
@@ -75,26 +75,26 @@ msgid "Edited %s"
 msgstr "Upravené %s"
 
 msgid "Element Properties"
-msgstr "Vlastnosti prvkov"
+msgstr "Vlastnosti prvku"
 
 #, tao-public
 msgid "Export"
 msgstr "Export"
 
 msgid "Export Media as Zip file"
-msgstr "Exportovať médiá ako súbor ZIP"
+msgstr "Exportovať multimédiá ako súbor ZIP"
 
 msgid "Fail to edit shared stimulus"
-msgstr "Nepodarilo sa upraviť zdieľaný podnet"
+msgstr "Nepodarilo sa upraviť zdieľaný stimul"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr "Nepodarilo sa upraviť zdieľaný podnet"
+msgstr "Nepodarilo sa upraviť Zdieľaný stimul"
 
 msgid "Fail to import media"
-msgstr "Import médií zlyhal"
+msgstr "Import multimédií zlyhal"
 
 msgid "Fail to import Shared Stimulus"
-msgstr "Nepodarilo sa importovať zdieľaný stimul"
+msgstr "Nepodarilo sa importovať Zdieľaný stimul"
 
 msgid "File"
 msgstr "Súbor"
@@ -113,7 +113,7 @@ msgid "Imported %s"
 msgstr "Importované %s"
 
 msgid "Imported new file"
-msgstr "Importovaný nový súbor"
+msgstr "Nový súbor importovaný"
 
 msgid "Initial import"
 msgstr "Počiatočný import"
@@ -141,31 +141,31 @@ msgstr "Vľavo"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr "Správa aktív"
+msgstr "Správa zdrojov"
 
 #, tao-public
 msgid "Manage Schema"
 msgstr "Spravovať schému"
 
 msgid "Media imported"
-msgstr "Importované médiá"
+msgstr "Importované multimédiá"
 
 msgid "Media imported successfully"
-msgstr "Médiá boli úspešne importované"
+msgstr "Multimédiá boli úspešne importované"
 
 #, tao-public
 msgid "Media Manager"
-msgstr "Mediálny manažér"
+msgstr "Správca multimédií"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr "Rozšírenie Správca médií"
+msgstr "Rozšírenie Správca multimédií"
 
 msgid "Media Options"
-msgstr "Možnosti médií"
+msgstr "Možnosti multimédií"
 
 msgid "Media successfully exported."
-msgstr "Médiá boli úspešne exportované."
+msgstr "Multimédiá boli úspešne exportované."
 
 #, tao-public
 msgid "Move"
@@ -173,33 +173,33 @@ msgstr "Presunúť"
 
 #, tao-public
 msgid "New class"
-msgstr "Nová trieda"
+msgstr "Nový priečinok"
 
 #, tao-public
 msgid "New passage"
 msgstr "Nová pasáž"
 
 msgid "No file found for this media"
-msgstr "Pre toto médium sa nenašiel žiadny súbor"
+msgstr "Pre toto multimédium sa nenašiel žiadny súbor"
 
 msgid "Passage Properties"
 msgstr "Vlastnosti pasáže"
 
 msgid "Please delete the subclasses before."
-msgstr "Predtým, prosím, vymažte podtriedy."
+msgstr "Najprv prosím vymažte podpriečinky."
 
 msgid "Preview"
 msgstr "Náhľad"
 
 msgid "Preview the item"
-msgstr "Zobraziť ukážku položky"
+msgstr "Zobraziť náhľad položky"
 
 #, tao-public
 msgid "Properties"
-msgstr "Nehnuteľnosti"
+msgstr "Vlastnosti"
 
 msgid "Replace Asset"
-msgstr "Nahradiť aktívum"
+msgstr "Nahradiť zdroj"
 
 msgid "Resource deleted"
 msgstr "Zdroj bol odstránený"
@@ -211,16 +211,16 @@ msgid "Save"
 msgstr "Uložiť"
 
 msgid "Save the asset"
-msgstr "Uložte si aktívum"
+msgstr "Uložte si zdroj"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr "Nastavte názov triedy CSS, aby ste mohli prispôsobiť štýl zobrazenia."
+msgstr "Zadajte názov triedy CSS, aby ste mohli prispôsobiť štýl zobrazenia."
 
 msgid "Shared Stimulus"
 msgstr "Zdieľaný stimul"
 
 msgid "Shared Stimulus edited successfully"
-msgstr "Zdieľaný podnet bol úspešne upravený"
+msgstr "Zdieľaný stimul bol úspešne upravený"
 
 msgid "Shared Stimulus imported successfully"
 msgstr "Zdieľaný stimul bol úspešne importovaný"
@@ -235,7 +235,7 @@ msgid "Text Block CSS Class"
 msgstr "Trieda CSS textového bloku"
 
 msgid "The class"
-msgstr "Trieda"
+msgstr "Priečinok"
 
 msgid "This"
 msgstr "Toto"
@@ -250,7 +250,7 @@ msgid "Unable to import"
 msgstr "Nepodarilo sa importovať"
 
 msgid "Upload Media"
-msgstr "Nahrať médiá"
+msgstr "Nahrať multimédiá"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 msgstr "Použitie: ImportMedia MEDIA_FILE [CIEĽOVÁ_TRIEDA]"
@@ -259,20 +259,20 @@ msgid "Warning"
 msgstr "POZOR"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr "ktorý obsahuje aktíva, ktoré sa používajú inde."
+msgstr "ktorý obsahuje zdroje, ktoré sa používajú inde."
 
 msgid "You are about to delete the class"
-msgstr "Chystáte sa odstrániť triedu"
+msgstr "Chystáte sa odstrániť priečinok"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "ktorý sa pokúšate odstrániť, je príliš veľký a obsahuje príliš veľa podtried."
+msgstr "ktorý sa pokúšate odstrániť, je príliš veľký a obsahuje príliš veľa podpriečinkov."
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr "Súbor ZIP nie je možné nahrať ako médium"
+msgstr "Súbor ZIP nie je možné nahrať ako multimédium"
 
 msgid "Your passage is saved"
 msgstr "Vaša pasáž je uložená"
 
 msgid "Zip"
-msgstr "Zip"
+msgstr "ZIP"
 
