@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:24\n"
+"PO-Revision-Date: 2026-07-03 14:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl\n"
@@ -21,36 +21,36 @@ msgstr ""
 "Language-Team: Dutch\n"
 
 msgid "%s media on this environment"
-msgstr ""
+msgstr "%s media op deze omgeving"
 
 msgid "%s media successfully modified"
-msgstr ""
+msgstr "%s media succesvol gewijzigd"
 
 msgid "%s media to modify"
-msgstr ""
+msgstr "%s media om te wijzigen"
 
 msgid "Add a media file"
 msgstr "Voeg een media bestand toe"
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr ""
+msgstr "Er is een fout opgetreden. Neem contact op met uw beheerder."
 
 msgid "Are you sure you want to delete this"
-msgstr ""
+msgstr "Weet u zeker dat u dit wilt verwijderen?"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr ""
+msgstr "Weet u zeker dat u deze groepsruimte en alle inhoud wilt verwijderen?"
 
 #, tao-public
 msgid "Assets"
-msgstr ""
+msgstr "Activa"
 
 #, tao-public
 msgid "Authoring"
 msgstr "Construeren"
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "Terug naar het beheren van activa"
 
 msgid "Block"
 msgstr "Blok"
@@ -66,7 +66,7 @@ msgid "Delete"
 msgstr "Verwijderen"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr ""
+msgstr "Het verwijderen van deze klasse zal de items en de tests die momenteel worden gebruikt kapot maken."
 
 msgid "Edit Instance"
 msgstr "Pas instantie aan"
@@ -79,7 +79,7 @@ msgstr "Element eigenschappen"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Exporteren"
 
 msgid "Export Media as Zip file"
 msgstr "Exporteer media als zip bestand"
@@ -103,11 +103,11 @@ msgid "File name"
 msgstr "Bestandsnaam"
 
 msgid "Forbidden action"
-msgstr ""
+msgstr "Verboden actie"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importeren"
 
 msgid "Imported %s"
 msgstr "Geïmporteerd: %s"
@@ -119,19 +119,19 @@ msgid "Initial import"
 msgstr "Initiële import"
 
 msgid "Inline Interactions"
-msgstr ""
+msgstr "Inline interacties"
 
 msgid "Instance saved"
 msgstr "Instantie opgeslagen"
 
 msgid "is currently used in"
-msgstr ""
+msgstr "wordt momenteel gebruikt in"
 
 msgid "Issue while modifying %s"
-msgstr ""
+msgstr "Probleem tijdens het wijzigen van %s"
 
 msgid "item(s)"
-msgstr ""
+msgstr "artikel(en)"
 
 msgid "Language"
 msgstr "Taal"
@@ -141,14 +141,14 @@ msgstr "Links"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr ""
+msgstr "Activa beheren"
 
 #, tao-public
 msgid "Manage Schema"
 msgstr "Schema beheren"
 
 msgid "Media imported"
-msgstr ""
+msgstr "Media geïmporteerd"
 
 msgid "Media imported successfully"
 msgstr "Media succesvol geïmporteerd"
@@ -177,16 +177,16 @@ msgstr "Nieuwe klasse"
 
 #, tao-public
 msgid "New passage"
-msgstr ""
+msgstr "Nieuwe passage"
 
 msgid "No file found for this media"
 msgstr "Geen bestand gevonden voor deze media"
 
 msgid "Passage Properties"
-msgstr ""
+msgstr "Passage eigenschappen"
 
 msgid "Please delete the subclasses before."
-msgstr ""
+msgstr "Verwijder de subklassen eerder."
 
 msgid "Preview"
 msgstr "Voorbeeld"
@@ -196,13 +196,13 @@ msgstr "Bekijk het item"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschappen"
 
 msgid "Replace Asset"
-msgstr ""
+msgstr "Replace Asset"
 
 msgid "Resource deleted"
-msgstr ""
+msgstr "Bron verwijderd"
 
 msgid "Right"
 msgstr "Rechts"
@@ -211,7 +211,7 @@ msgid "Save"
 msgstr "Opslaan"
 
 msgid "Save the asset"
-msgstr ""
+msgstr "Sla de asset op"
 
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Stel een CSS-klassennaam in om de weergavestijl aan te passen."
@@ -232,46 +232,46 @@ msgid "Text Block"
 msgstr "Tekst blok"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "Tekstblok CSS class"
 
 msgid "The class"
-msgstr ""
+msgstr "De klas"
 
 msgid "This"
-msgstr ""
+msgstr "Dit"
 
 msgid "Unable to delete the selected resource"
-msgstr ""
+msgstr "Niet in staat om de geselecteerde resource te verwijderen"
 
 msgid "Unable to extract the archive"
 msgstr "Kon archief niet uitpakken"
 
 msgid "Unable to import"
-msgstr ""
+msgstr "Kan niet importeren"
 
 msgid "Upload Media"
 msgstr "Media uploaden"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr ""
+msgstr "Gebruik: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr ""
+msgstr "die activa bevat die elders worden gebruikt."
 
 msgid "You are about to delete the class"
-msgstr ""
+msgstr "U staat op het punt deze les te verwijderen"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr ""
+msgstr "je probeert te verwijderen is te groot en bevat te veel subklassen."
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr ""
+msgstr "U kunt geen zip-bestand als media uploaden"
 
 msgid "Your passage is saved"
-msgstr ""
+msgstr "Je passage is opgeslagen"
 
 msgid "Zip"
 msgstr "Postcode"
