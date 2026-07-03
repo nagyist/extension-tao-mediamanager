@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:24\n"
+"PO-Revision-Date: 2026-07-03 14:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: pt\n"
@@ -21,151 +21,151 @@ msgstr ""
 "Language-Team: Portuguese\n"
 
 msgid "%s media on this environment"
-msgstr ""
+msgstr "%s mídia neste ambiente"
 
 msgid "%s media successfully modified"
-msgstr ""
+msgstr "Mídia %s modificada com sucesso"
 
 msgid "%s media to modify"
-msgstr ""
+msgstr "%s mídia a modificar"
 
 msgid "Add a media file"
-msgstr ""
+msgstr "Adicionar um arquivo de mídia"
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr ""
+msgstr "Um erro ocorreu. Por favor, contate o administrador."
 
 msgid "Are you sure you want to delete this"
-msgstr ""
+msgstr "Tem certeza que deseja excluir isto"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr ""
+msgstr "Tem certeza que deseja excluir esta classe e todo o seu conteúdo?"
 
 #, tao-public
 msgid "Assets"
-msgstr ""
+msgstr "Mídias"
 
 #, tao-public
 msgid "Authoring"
 msgstr "Criador"
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "Voltar para Gerenciar Ativos"
 
 msgid "Block"
-msgstr ""
+msgstr "Bloquear"
 
 msgid "Center"
-msgstr ""
+msgstr "Centralizar"
 
 msgid "Define item language."
-msgstr ""
+msgstr "Defina idioma do item."
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "excluir"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr ""
+msgstr "Excluindo esta classe irá quebrar os itens e os testes que estão atualmente em uso."
 
 msgid "Edit Instance"
-msgstr ""
+msgstr "Editar instância"
 
 msgid "Edited %s"
-msgstr ""
+msgstr "Editado %s"
 
 msgid "Element Properties"
-msgstr ""
+msgstr "Propriedades do Elemento"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Exportação"
 
 msgid "Export Media as Zip file"
-msgstr ""
+msgstr "Exportar mídia como arquivo Zip"
 
 msgid "Fail to edit shared stimulus"
-msgstr ""
+msgstr "Falha ao editar o estímulo compartilhado"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr ""
+msgstr "Falha ao editar o Estimulante Compartilhado"
 
 msgid "Fail to import media"
-msgstr ""
+msgstr "Falha ao importar mídia"
 
 msgid "Fail to import Shared Stimulus"
-msgstr ""
+msgstr "Falha ao importar o Stimulus Compartilhado"
 
 msgid "File"
-msgstr ""
+msgstr "Arquivo"
 
 msgid "File name"
-msgstr ""
+msgstr "Nome do arquivo"
 
 msgid "Forbidden action"
-msgstr ""
+msgstr "Ação proibida"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importação"
 
 msgid "Imported %s"
-msgstr ""
+msgstr "Importado %s"
 
 msgid "Imported new file"
-msgstr ""
+msgstr "Novo arquivo importado"
 
 msgid "Initial import"
-msgstr ""
+msgstr "Importação inicial"
 
 msgid "Inline Interactions"
-msgstr ""
+msgstr "Interações Embutidas"
 
 msgid "Instance saved"
-msgstr ""
+msgstr "Instância salva"
 
 msgid "is currently used in"
-msgstr ""
+msgstr "é usado atualmente em"
 
 msgid "Issue while modifying %s"
-msgstr ""
+msgstr "Problema ao modificar %s"
 
 msgid "item(s)"
-msgstr ""
+msgstr "itens"
 
 msgid "Language"
-msgstr ""
+msgstr "IDIOMA"
 
 msgid "Left"
-msgstr ""
+msgstr "Esquerda"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr ""
+msgstr "Gerenciar Ativos"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "Gerenciar esquema"
 
 msgid "Media imported"
-msgstr ""
+msgstr "Mídia importada"
 
 msgid "Media imported successfully"
-msgstr ""
+msgstr "Mídia importada com sucesso"
 
 #, tao-public
 msgid "Media Manager"
-msgstr ""
+msgstr "Gerenciador de Mídia"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr ""
+msgstr "Extensão do Media Manager"
 
 msgid "Media Options"
-msgstr ""
+msgstr "Opções de mídia"
 
 msgid "Media successfully exported."
-msgstr ""
+msgstr "Mídia exportada com sucesso."
 
 #, tao-public
 msgid "Move"
@@ -177,102 +177,102 @@ msgstr "Nova disciplina"
 
 #, tao-public
 msgid "New passage"
-msgstr ""
+msgstr "Nova passagem"
 
 msgid "No file found for this media"
-msgstr ""
+msgstr "Nenhum arquivo encontrado para esta mídia"
 
 msgid "Passage Properties"
-msgstr ""
+msgstr "Propriedades da passagem"
 
 msgid "Please delete the subclasses before."
-msgstr ""
+msgstr "Por favor, exclua as subclasses antes."
 
 msgid "Preview"
-msgstr ""
+msgstr "Pré-visualizar"
 
 msgid "Preview the item"
-msgstr ""
+msgstr "Pré-visualizar o item"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "propriedades"
 
 msgid "Replace Asset"
-msgstr ""
+msgstr "Replace Asset"
 
 msgid "Resource deleted"
-msgstr ""
+msgstr "Recurso excluído"
 
 msgid "Right"
-msgstr ""
+msgstr "Direita"
 
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 msgid "Save the asset"
-msgstr ""
+msgstr "Salvar o ativo"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr ""
+msgstr "Definir um nome de classe CSS para personalizar o estilo de exibição."
 
 msgid "Shared Stimulus"
-msgstr ""
+msgstr "Estimulante Compartilhado"
 
 msgid "Shared Stimulus edited successfully"
-msgstr ""
+msgstr "Estimulos compartilhados editados com sucesso"
 
 msgid "Shared Stimulus imported successfully"
-msgstr ""
+msgstr "Estimulante Compartilhado importado com sucesso"
 
 msgid "some text ..."
-msgstr ""
+msgstr "algum texto..."
 
 msgid "Text Block"
-msgstr ""
+msgstr "Bloco de texto"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "Classe CSS do Bloco de Texto"
 
 msgid "The class"
-msgstr ""
+msgstr "A aula"
 
 msgid "This"
-msgstr ""
+msgstr "Esta"
 
 msgid "Unable to delete the selected resource"
-msgstr ""
+msgstr "Não é possível excluir o recurso selecionado"
 
 msgid "Unable to extract the archive"
-msgstr ""
+msgstr "Não foi possível extrair o arquivo"
 
 msgid "Unable to import"
-msgstr ""
+msgstr "Não é possível importar"
 
 msgid "Upload Media"
-msgstr ""
+msgstr "Carregar Mídia"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr ""
+msgstr "Uso: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
-msgstr ""
+msgstr "ATENÇÃO"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr ""
+msgstr "que contém ativos que estão em uso em outro lugar."
 
 msgid "You are about to delete the class"
-msgstr ""
+msgstr "Você está prestes a excluir a aula"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr ""
+msgstr "você está tentando excluir é muito grande e contém muitas subclasses."
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr ""
+msgstr "Você não pode carregar um arquivo zip como uma mídia"
 
 msgid "Your passage is saved"
-msgstr ""
+msgstr "Sua passagem está salva"
 
 msgid "Zip"
-msgstr ""
+msgstr "CEP"
 
